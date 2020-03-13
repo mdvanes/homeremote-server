@@ -1,4 +1,10 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 
-@Controller('cats')
-export class CatsController {}
+@Controller('api/cats')
+export class CatsController {
+
+  @Get()
+  getMy(): string {
+    return "Cats";
+  }
+}
