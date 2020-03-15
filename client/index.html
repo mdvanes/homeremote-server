@@ -13,6 +13,21 @@
     </style>
 </head>
 <body>
-It works! (haha)
+
+<!-- is send to /auth/login -->
+<form method="post" action="/api/foo/auth/login">
+    <input type="text" name="username">
+    <input name="password">
+    <input type="submit">
+</form>
+
+
+<h2>Some endpoints</h2>
+
+<ul>
+    <li><a href="/api/cats">/api/cats</a></li>
+    <li><a href="/api/foo">/api/foo</a></li>
+</ul>
+
 </body>
 </html>

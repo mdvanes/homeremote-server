@@ -5,13 +5,15 @@ import { CatsController } from './cats/cats.controller';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { FooController } from './foo/foo.controller';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 
 @Module({
   // Make sure no controller is bound to /, otherwise it will overwrite the static serving
   imports: [ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
-    }),],
+    }), AuthModule, UsersModule,],
   // controllers: [AppController, MyController, CatsController],
   controllers: [FooController, CatsController, FooController],
   providers: [AppService],
