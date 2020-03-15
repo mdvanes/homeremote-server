@@ -14,8 +14,14 @@
 </head>
 <body>
 
+<!-- TODO https://stackoverflow.com/questions/26340275/where-to-save-a-jwt-in-a-browser-based-application-and-how-to-use-it
+ Probably easiest to use
+localStorage.setItem('token', 'asY-x34SfYPk'); // write
+console.log(localStorage.getItem('token')); // read
+ -->
+
 <!-- is send to /auth/login -->
-<form method="post" action="/api/foo/auth/login">
+<form id="form">
     <input type="text" name="username">
     <input name="password">
     <input type="submit">
@@ -26,8 +32,51 @@
 
 <ul>
     <li><a href="/api/cats">/api/cats</a></li>
-    <li><a href="/api/foo">/api/foo</a></li>
+    <li><a href="/api/foo">/api/foo</a><button id="test">test</button></li>
 </ul>
+
+<script>
+    document.getElementById("form").addEventListener('submit', (ev) => {
+      ev.preventDefault();
+      // method="post" action="/api/foo/auth/login"
+      console.log("submit")
+      fetch('/api/foo/auth/login', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: 'john', // TODO use inputs
+          password: 'changeme'
+        })
+      })
+        .then(data => data.json())
+        .then(data => {
+          console.log(data);
+          localStorage.setItem('token', data.access_token);
+        })
+    });
+
+    // TODO JWT is good for APIs, not sessions. Is it good for WebSocket/FTP update?
+
+    document.getElementById('test').addEventListener('click', (ev) => {
+      const token = localStorage.getItem('token');
+
+      fetch('/api/foo', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        // .then(data => data.json())
+        .then(data => {
+          console.log(data);
+        })
+    })
+
+    // TODO Logout: delete token from localStorage
+</script>
 
 </body>
 </html>
