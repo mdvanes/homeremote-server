@@ -1,4 +1,5 @@
-import { Controller, Get, Logger } from '@nestjs/common';
+import { Controller, Get, Logger, Post, Request, UseGuards } from '@nestjs/common';
+import { LocalAuthGuard } from '../auth/local-auth.guard';
 
 @Controller('api/foo')
 export class FooController {
@@ -8,6 +9,15 @@ export class FooController {
     this.logger = new Logger(FooController.name);
   }
 
+  // this is ending up at /api/foo/auth/login
+  @UseGuards(LocalAuthGuard)
+  @Post('auth/login')
+  async login(@Request() req) {
+    console.log(`login: ${req}`)
+    return req.user;
+  }
+
+  @UseGuards(LocalAuthGuard)
   @Get()
   getMy(): string {
     console.log('GET to /api/foo');
