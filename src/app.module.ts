@@ -15,7 +15,7 @@ import { UsersModule } from './users/users.module';
       rootPath: join(__dirname, '..', 'client'),
     }), AuthModule, UsersModule,],
   // controllers: [AppController, MyController, CatsController],
-  controllers: [FooController, CatsController, FooController],
+  controllers: [CatsController, FooController],
   providers: [AppService],
 })
 export class AppModule {}
