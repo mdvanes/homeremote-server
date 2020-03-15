@@ -22,24 +22,24 @@ console.log(localStorage.getItem('token')); // read
 
 <!-- is send to /auth/login -->
 <form id="form">
-    <input type="text" name="username">
-    <input name="password">
+    <input type="text" name="username" id="username">
+    <input type="password" name="password" id="password">
     <input type="submit">
 </form>
 
+<button id="logout">Log out</button>
 
 <h2>Some endpoints</h2>
 
 <ul>
-    <li><a href="/api/cats">/api/cats</a></li>
-    <li><a href="/api/foo">/api/foo</a><button id="test">test</button></li>
+    <li><a href="/api/cats">/api/cats</a> <button id="cats">get</button></li>
+    <li><a href="/api/foo">/api/foo</a> <button id="foo">get</button></li>
 </ul>
 
 <script>
+    // TODO       do this on the server with an old fashioned POST?
     document.getElementById("form").addEventListener('submit', (ev) => {
       ev.preventDefault();
-      // method="post" action="/api/foo/auth/login"
-      console.log("submit")
       fetch('/api/foo/auth/login', {
         method: 'POST',
         headers: {
@@ -47,8 +47,8 @@ console.log(localStorage.getItem('token')); // read
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          username: 'john', // TODO use inputs
-          password: 'changeme'
+          username: document.getElementById('username').value,
+          password: document.getElementById('password').value
         })
       })
         .then(data => data.json())
@@ -60,7 +60,22 @@ console.log(localStorage.getItem('token')); // read
 
     // TODO JWT is good for APIs, not sessions. Is it good for WebSocket/FTP update?
 
-    document.getElementById('test').addEventListener('click', (ev) => {
+    document.getElementById('cats').addEventListener('click', (ev) => {
+      const token = localStorage.getItem('token');
+
+      fetch('/api/cats', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(data => data.text())
+        .then(data => {
+          console.log(data);
+        })
+    });
+
+    document.getElementById('foo').addEventListener('click', (ev) => {
       const token = localStorage.getItem('token');
 
       fetch('/api/foo', {
@@ -69,13 +84,16 @@ console.log(localStorage.getItem('token')); // read
           'Authorization': `Bearer ${token}`
         }
       })
-        // .then(data => data.json())
+        .then(data => data.text())
         .then(data => {
           console.log(data);
         })
-    })
+    });
 
-    // TODO Logout: delete token from localStorage
+    // TODO Logout: delete token from localStorage -   also invalidate on the server!
+    document.getElementById('logout').addEventListener('click', (ev) => {
+      localStorage.removeItem('token');
+    });
 </script>
 
 </body>
