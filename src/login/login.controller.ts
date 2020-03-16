@@ -13,7 +13,7 @@ export class LoginController {
 
   // Should not be guarded!
   @Get()
-  getFoo(): string {
+  getLoginPage(): string {
     this.logger.verbose('GET to /auth/login');
 
     // This only works with absolute paths, __dirname refers to `dist`
