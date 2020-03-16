@@ -1,3 +1,5 @@
+import auth from '../../auth.json';
+
 export const jwtConstants = {
-  secret: 'secretKey',
+  secret: auth.secret,
 };
