@@ -1,9 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import bcrypt from 'bcrypt';
+import { UsersService } from '../users/users.service';
 
 /*
 TODO
+
+Use bcrypt
 
 WARNING
 Of course in a real application, you wouldn't store a password in plain text. You'd instead use a library like bcrypt, with a salted one-way hash algorithm.
@@ -13,16 +16,25 @@ or exposing user passwords in plain text. To keep our sample app simple, we viol
 
 @Injectable()
 export class AuthService {
+  private readonly logger;
+
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService
-  ) {}
+  ) {
+    this.logger = new Logger(AuthService.name);
+  }
 
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.usersService.findOne(username);
-    if (user && user.password === pass) {
-      const { password, ...result } = user;
-      return result;
+    try {
+      const isEqual = await bcrypt.compare(pass, user?.hash);
+      if (isEqual) {
+        const { hash, ...result } = user;
+        return result;
+      }
+    } catch (err) {
+      this.logger.error(`Can't compare password to hash ${err}`);
     }
     return null;
   }

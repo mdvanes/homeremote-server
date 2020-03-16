@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import auth from '../../auth.json';
 
 export type User = any;
 
@@ -7,24 +8,7 @@ export class UsersService {
   private readonly users: User[];
 
   constructor() {
-    // TODO from auths file, conform /etc/passwd?
-    this.users = [
-      {
-        userId: 1,
-        username: 'john',
-        password: 'changeme',
-      },
-      {
-        userId: 2,
-        username: 'chris',
-        password: 'secret',
-      },
-      {
-        userId: 3,
-        username: 'maria',
-        password: 'guess',
-      },
-    ];
+    this.users = auth.users;
   }
 
   async findOne(username: string): Promise<User | undefined> {

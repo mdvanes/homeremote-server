@@ -1,12 +1,17 @@
-import { Controller, Get, Query, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Logger, Query, Request, UseGuards } from '@nestjs/common';
+import bcrypt from 'bcrypt';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import bcrypt from "bcrypt";
 const saltRounds = 10;
 
 @Controller()
 export class ProfileController {
+  private readonly logger;
 
-  // TODO Use this to show the "logged in as user"
+  constructor() {
+    this.logger = new Logger(ProfileController.name);
+  }
+
+  // Use this to show the "logged in as user"
   @UseGuards(JwtAuthGuard)
   @Get('api/profile')
   getProfile(@Request() req) {
@@ -17,7 +22,11 @@ export class ProfileController {
   // Should not have guard
   @Get('api/gethash')
   async getHash(@Query() query) {
-    const hash = await bcrypt.hash(query.password, saltRounds);
-    return hash;
+    try {
+      const hash = await bcrypt.hash(query.password, saltRounds);
+      return hash;
+    } catch (err) {
+      this.logger.error(`Can't hash password ${err}`);
+    }
   }
 }
