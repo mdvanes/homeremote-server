@@ -11,12 +11,12 @@ import { ProfileController } from './profile/profile.controller';
 import { LoginController } from './login/login.controller';
 
 @Module({
-  // TODO static serving should be guarded
+  // TODO static serving should be guarded see https://docs.nestjs.com/techniques/mvc
   // Make sure no controller is bound to /, otherwise it will overwrite the static serving
   imports: [ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
-    }), AuthModule, UsersModule,],
-  // controllers: [AppController, MyController, CatsController],
+    }), AuthModule, UsersModule],
+  // controllers: [AppController,
   controllers: [CatsController, FooController, ProfileController, LoginController],
   providers: [AppService],
 })
