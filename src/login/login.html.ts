@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -71,7 +71,7 @@ console.log(localStorage.getItem('token')); // read
     fetch('/api/cats', {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`
+        'Authorization': 'Bearer ' + token
       }
     })
       .then(data => data.text())
@@ -86,7 +86,7 @@ console.log(localStorage.getItem('token')); // read
     fetch('/api/foo', {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`
+        'Authorization': 'Bearer ' + token
       }
     })
       .then(data => data.text())
@@ -101,7 +101,7 @@ console.log(localStorage.getItem('token')); // read
     fetch('/api/profile', {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`
+        'Authorization': 'Bearer ' + token
       }
     })
       .then(data => data.text())
@@ -112,4 +112,6 @@ console.log(localStorage.getItem('token')); // read
 </script>
 
 </body>
-</html>
+</html>`;
+
+export default html;
