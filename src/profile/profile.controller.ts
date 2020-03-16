@@ -1,13 +1,23 @@
-import { Controller, Get, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, Request, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import bcrypt from "bcrypt";
+const saltRounds = 10;
 
-@Controller('api/profile')
+@Controller()
 export class ProfileController {
 
-  // TODO this to show the "logged in as user"
+  // TODO Use this to show the "logged in as user"
   @UseGuards(JwtAuthGuard)
-  @Get()
+  @Get('api/profile')
   getProfile(@Request() req) {
     return req.user;
+  }
+
+  // Use to create a hash, because there is no "create new user" flow implemented
+  // Should not have guard
+  @Get('api/gethash')
+  async getHash(@Query() query) {
+    const hash = await bcrypt.hash(query.password, saltRounds);
+    return hash;
   }
 }
