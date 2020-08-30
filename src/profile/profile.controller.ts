@@ -20,13 +20,13 @@ export class ProfileController {
 
   // Use to create a hash, because there is no "create new user" flow implemented
   // Should not have guard
-  @Get('api/gethash')
-  async getHash(@Query() query) {
-    try {
-      const hash = await bcrypt.hash(query.password, saltRounds);
-      return hash;
-    } catch (err) {
-      this.logger.error(`Can't hash password ${err}`);
-    }
-  }
+  // @Get('api/gethash')
+  // async getHash(@Query() query) {
+  //   try {
+  //     const hash = await bcrypt.hash(query.password, saltRounds);
+  //     return hash;
+  //   } catch (err) {
+  //     this.logger.error(`Can't hash password ${err}`);
+  //   }
+  // }
 }
