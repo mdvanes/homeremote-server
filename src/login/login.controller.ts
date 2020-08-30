@@ -25,7 +25,7 @@ export class LoginController {
   @UseGuards(LocalAuthGuard)
   @Post()
   async login(@Request() req) {
-    this.logger.verbose(`login: ${req.user}`);
+    this.logger.verbose(`login: ${JSON.stringify(req.user)}`);
     return this.authService.login(req.user);
   }
 }
