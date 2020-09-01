@@ -1,4 +1,4 @@
-import { Controller, Logger, Get } from '@nestjs/common';
+import { Controller, Logger, Get, Post, Body, Param } from '@nestjs/common';
 import got from "got";
 
 // TODO ConfigService instead of settings.json https://docs.nestjs.com/techniques/configuration#using-the-configservice
@@ -100,6 +100,12 @@ const mapSwitch = async ({
     return switchResult;
 };
 
+
+interface UpdateSwitchMessage {
+    state: string;
+    type: string;
+}
+
 @Controller('api/switches')
 export class SwitchesController {
     private readonly logger: Logger;
@@ -108,7 +114,7 @@ export class SwitchesController {
         this.logger = new Logger(SwitchesController.name);
     }
 
-    // @UseGuards(JwtAuthGuard)
+    // TODO @UseGuards(JwtAuthGuard)
     @Get()
     async getSwitches(): Promise<SwitchesResponse> {
         //   console.log('GET to /api/switches');
@@ -150,5 +156,38 @@ export class SwitchesController {
             this.logger.error('domoticzuri not configured');
             return { status: 'error' };
         }
+    }
+
+
+    @Post(":switchId")
+    async updateSwitch(@Param("switchId") switchId: string, @Body() message: UpdateSwitchMessage): Promise<any> {
+        const { state, type: switchType } = message;
+        const newState = state === 'on' ? 'On' : 'Off';
+
+        this.logger.verbose(
+            `Call to /switch/${switchId} [state: ${newState} domoticzuri: ${
+            settings.domoticzuri
+            }]`
+        );
+        if (settings.domoticzuri && settings.domoticzuri.length > 0) {
+            const targetUri = `${settings.domoticzuri}/json.htm?type=command&param=${switchType}&idx=${switchId}&switchcmd=${newState}`;
+            try {
+                const remoteResponse = await got(targetUri);
+                const remoteResponseJson = JSON.parse(remoteResponse.body);
+                if (remoteResponseJson.status === 'OK') {
+                    return { status: 'received' };
+                } else {
+                    throw new Error('remoteResponse failed');
+                }
+
+            } catch (err) {
+                this.logger.error(err);
+                return { status: 'error' };
+            }
+        } else {
+            this.logger.error('domoticzuri not configured');
+            return { status: 'error' };
+        }
+
     }
 }
