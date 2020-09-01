@@ -35,6 +35,7 @@ console.log(localStorage.getItem('token')); // read
     <li><a href="/api/cats">/api/cats</a> <button id="cats">get</button></li>
     <li><a href="/api/foo">/api/foo</a> <button id="foo">get</button></li>
     <li><a href="/api/profile">/api/profile</a> <button id="profile">get</button></li>
+    <li><a href="/api/switches">/api/switches</a> <button id="switches">get</button></li>
 </ul>
 
 <script>
@@ -109,6 +110,21 @@ console.log(localStorage.getItem('token')); // read
           console.log(data);
         })
     });
+
+    document.getElementById('switches').addEventListener('click', (ev) => {
+      const token = localStorage.getItem('token');
+
+      fetch('/api/switches', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(data => data.text())
+        .then(data => {
+          console.log(data);
+        })
+    });    
 </script>
 
 </body>
