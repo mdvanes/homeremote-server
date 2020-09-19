@@ -1,5 +1,6 @@
-import { Controller, Logger, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Logger, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import got from "got";
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 // TODO ConfigService instead of settings.json https://docs.nestjs.com/techniques/configuration#using-the-configservice
 // "domoticzuri": "http://192.168.0.8:8080",
@@ -114,7 +115,7 @@ export class SwitchesController {
         this.logger = new Logger(SwitchesController.name);
     }
 
-    // TODO @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     @Get()
     async getSwitches(): Promise<SwitchesResponse> {
         //   console.log('GET to /api/switches');
@@ -158,7 +159,7 @@ export class SwitchesController {
         }
     }
 
-
+    @UseGuards(JwtAuthGuard)
     @Post(":switchId")
     async updateSwitch(@Param("switchId") switchId: string, @Body() message: UpdateSwitchMessage): Promise<any> {
         const { state, type: switchType } = message;
