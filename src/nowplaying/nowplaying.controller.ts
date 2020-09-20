@@ -1,18 +1,15 @@
 import {
   Controller,
-  UseGuards,
   Get,
   Logger,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-// @ts-ignore
-import {
+const {
   getNowPlaying,
   ChannelName,
-} from '@mdworld/homeremote-stream-player-server';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+} = require('@mdworld/homeremote-stream-player-server');
 
 interface NowPlayingResponse {
   artist: string;

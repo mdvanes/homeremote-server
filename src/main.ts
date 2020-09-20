@@ -8,7 +8,7 @@ declare const module: any;
 // Guard static files
 
 const DEV_PORT = 3001; // Development
-const PROD_PORT = 3000; // Production
+const PROD_PORT = 3200; // Production
 
 async function bootstrap() {
   console.log("mode=", process.env.NODE_ENV)
