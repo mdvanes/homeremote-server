@@ -5,11 +5,11 @@ import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
-  private readonly logger;
+  private readonly logger: Logger;
 
   constructor(
     private readonly usersService: UsersService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
   ) {
     this.logger = new Logger(AuthService.name);
   }
