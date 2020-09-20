@@ -8,7 +8,7 @@
     "prebuild": "rimraf dist",
     "build": "nest build && cp -r client dist",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
+    "start": "NODE_ENV=DEVELOPMENT nest start",
     "start:dev": "NODE_ENV=DEVELOPMENT nest build --watch --webpack --webpackPath webpack-hmr.config.js",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/src/main",
