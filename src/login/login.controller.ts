@@ -1,11 +1,22 @@
-import { Controller, Get, Logger, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Logger,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { LocalAuthGuard } from '../auth/local-auth.guard';
 import { AuthService } from '../auth/auth.service';
 import html from './login.html';
 
+interface LoginRequest {
+  user: { id: number; name: string };
+}
+
 @Controller('auth/login')
 export class LoginController {
-  private readonly logger;
+  private readonly logger: Logger;
 
   constructor(private readonly authService: AuthService) {
     this.logger = new Logger(LoginController.name);
@@ -24,7 +35,7 @@ export class LoginController {
 
   @UseGuards(LocalAuthGuard)
   @Post()
-  async login(@Request() req) {
+  async login(@Request() req: LoginRequest) {
     this.logger.verbose(`login: ${JSON.stringify(req.user)}`);
     return this.authService.login(req.user);
   }
