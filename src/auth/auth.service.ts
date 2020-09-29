@@ -1,12 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
+import { LoginRequest } from 'src/login/login.controller';
 import { UsersService } from '../users/users.service';
-
-interface UserInput {
-  userId: number;
-  username: string;
-}
 
 @Injectable()
 export class AuthService {
@@ -33,7 +29,7 @@ export class AuthService {
     return null;
   }
 
-  async login(user: UserInput) {
+  async login(user: LoginRequest["user"]) {
     const payload = { username: user.username, sub: user.userId };
     return {
       // eslint-disable-next-line @typescript-eslint/camelcase
