@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
 import { LoginRequestUser } from '../login/login.controller';
-import { UsersService } from '../users/users.service';
+import { User, UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
@@ -15,13 +15,16 @@ export class AuthService {
     this.logger = new Logger(AuthService.name);
   }
 
-  async validateUser(username: string, pass: string): Promise<any> {
+  async validateUser(username: string, pass: string): Promise<User | null> {
     const user = await this.usersService.findOne(username);
     try {
-      const isEqual = await bcrypt.compare(pass, user?.hash);
+      if (!user) {
+        throw new Error(`no user find for username ${username}`);
+      }
+      const isEqual = await bcrypt.compare(pass, user.hash);
       if (isEqual) {
-        const { hash, ...result } = user;
-        return result;
+        const { hash, ...userWithoutHash } = user;
+        return userWithoutHash;
       }
     } catch (err) {
       this.logger.error(`Can't compare password to hash ${err}`);
