@@ -22,10 +22,6 @@ describe('AuthService', () => {
     jwtService = module.get<JwtService>(JwtService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-
   it('gets a token for a user on login', async () => {
     jest.spyOn(jwtService, 'sign').mockImplementation(x => JSON.stringify(x));
     const mockUser: LoginRequestUser = { id: 1, name: 'Lee' };

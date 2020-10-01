@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from '../auth/auth.service';
-import { LoginController, LoginRequest } from './login.controller';
+import { LoginController, LoginRequestUser } from './login.controller';
 
 describe('Login Controller', () => {
   let controller: LoginController;
@@ -17,18 +17,14 @@ describe('Login Controller', () => {
     controller = module.get<LoginController>(LoginController);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
-
   it('/GET a static login page', async () => {
     expect(await controller.getLoginPage()).toContain('<title>Login</title>');
   });
 
   it('/POST returns a token for a user', async () => {
-    const mockUser: LoginRequest["user"] = {
-      userId: 1,
-      username: 'Lee',
+    const mockUser: LoginRequestUser = {
+      id: 1,
+      name: 'Lee',
     };
 
     // eslint-disable-next-line @typescript-eslint/camelcase
