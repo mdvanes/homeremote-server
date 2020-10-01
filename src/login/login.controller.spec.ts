@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { User } from 'src/users/users.service';
 import { AuthService } from '../auth/auth.service';
-import { LoginController, LoginRequestUser } from './login.controller';
+import { LoginController } from './login.controller';
 
 describe('Login Controller', () => {
   let controller: LoginController;
@@ -22,7 +23,7 @@ describe('Login Controller', () => {
   });
 
   it('/POST returns a token for a user', async () => {
-    const mockUser: LoginRequestUser = {
+    const mockUser: User = {
       id: 1,
       name: 'Lee',
     };

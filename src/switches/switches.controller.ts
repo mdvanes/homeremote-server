@@ -8,7 +8,7 @@ const settings = {
     "domoticzuri": "http://192.168.0.8:8080",
 }
 
-enum DomoticzType {
+export enum DomoticzType {
     Group = "Group",
     LightSwitch = "Light/Switch",
     Dimmer = "Dimmer",
@@ -17,7 +17,7 @@ enum DomoticzType {
 
 type DomoticzStatus = string;
 
-interface DomoticzSwitch {
+export interface DomoticzSwitch {
     idx: string;
     Type: DomoticzType;
     Name: string;
