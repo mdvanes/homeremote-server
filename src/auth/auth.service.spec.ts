@@ -1,5 +1,6 @@
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+import { LoginRequestUser } from 'src/login/login.controller';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 
@@ -27,13 +28,13 @@ describe('AuthService', () => {
 
   it('gets a token for a user on login', async () => {
     jest.spyOn(jwtService, 'sign').mockImplementation(x => JSON.stringify(x));
-    const mockUser = { username: 'Lee', userId: 1 };
+    const mockUser: LoginRequestUser = { id: 1, name: 'Lee' };
     const result = await service.login(mockUser);
     expect(jwtService.sign).toHaveBeenCalledWith({
-      sub: mockUser.userId,
-      username: mockUser.username,
+      sub: mockUser.id,
+      username: mockUser.name,
     });
     // eslint-disable-next-line @typescript-eslint/camelcase
-    expect(result).toEqual({ access_token: '{"username":"Lee","sub":1}' });
+    expect(result).toEqual({ access_token: '{"sub":1,"username":"Lee"}' });
   });
 });

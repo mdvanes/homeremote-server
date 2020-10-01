@@ -16,10 +16,6 @@ describe('Nowplaying Controller', () => {
     controller = module.get<NowplayingController>(NowplayingController);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
-
   it('/GET radio 2 info', async () => {
     const response = await controller.getRadio2();
     expect(response.title).toBeDefined();
