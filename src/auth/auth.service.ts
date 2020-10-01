@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
-import { LoginRequest } from 'src/login/login.controller';
+import { LoginRequestUser } from '../login/login.controller';
 import { UsersService } from '../users/users.service';
 
 @Injectable()
@@ -29,8 +29,8 @@ export class AuthService {
     return null;
   }
 
-  async login(user: LoginRequest["user"]) {
-    const payload = { username: user.username, sub: user.userId };
+  async login({ id, name }: LoginRequestUser) {
+    const payload = { sub: id, username: name };
     return {
       // eslint-disable-next-line @typescript-eslint/camelcase
       access_token: this.jwtService.sign(payload),

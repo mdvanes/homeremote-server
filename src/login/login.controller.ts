@@ -10,11 +10,12 @@ import { LocalAuthGuard } from '../auth/local-auth.guard';
 import { AuthService } from '../auth/auth.service';
 import html from './login.html';
 
-export interface LoginRequest {
-  user: {
-    userId: number;
-    username: string;
-  };
+export interface LoginRequestUser {
+  id: number;
+  name: string;
+}
+interface LoginRequest {
+  user: LoginRequestUser;
 }
 
 @Controller('auth/login')
