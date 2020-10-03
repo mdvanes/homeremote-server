@@ -3,6 +3,6 @@
   "users": [{
     "id": 1,
     "name": "john",
-    "hash": "my_password_hash"
+    "hash": "$2b$my_password_hash"
   }]
 }
