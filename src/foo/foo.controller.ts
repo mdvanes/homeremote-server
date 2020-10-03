@@ -12,12 +12,12 @@ export class FooController {
   @UseGuards(JwtAuthGuard)
   @Get()
   getFoo(): string {
-    console.log('GET to /api/foo');
-    this.logger.error('GET to /api/foo');
-    this.logger.warn('GET to /api/foo');
-    this.logger.log('GET to /api/foo');
-    this.logger.debug('GET to /api/foo');
-    this.logger.verbose('GET to /api/foo');
+    console.log('Console: GET to /api/foo');
+    this.logger.error('Error: GET to /api/foo');
+    this.logger.warn('Warning: GET to /api/foo');
+    this.logger.log('Log: GET to /api/foo');
+    this.logger.debug('Debug: GET to /api/foo');
+    this.logger.verbose('Verbose: GET to /api/foo');
     return 'Foo!';
   }
 }
