@@ -10,7 +10,7 @@ describe('Login Controller', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [LoginController],
-      // load the service with real implementation: providers: [AuthService],
+      // to load the service with real implementation, use: providers: [AuthService],
       providers: [{ provide: AuthService, useValue: { login: jest.fn() } }],
     }).compile();
 
