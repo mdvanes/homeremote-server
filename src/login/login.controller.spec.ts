@@ -28,7 +28,6 @@ describe('Login Controller', () => {
       name: 'Lee',
     };
 
-    // eslint-disable-next-line @typescript-eslint/camelcase
     const mockLoginResponse = { access_token: 'my_fake_access_token' };
 
     jest.spyOn(authService, 'login').mockResolvedValue(mockLoginResponse);

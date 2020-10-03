@@ -29,7 +29,6 @@ describe('AuthService', () => {
       sub: mockUser.id,
       username: mockUser.name,
     });
-    // eslint-disable-next-line @typescript-eslint/camelcase
     expect(result).toEqual({ access_token: '{"sub":1,"username":"Lee"}' });
   });
 });
