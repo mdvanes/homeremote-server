@@ -17,6 +17,18 @@
 
 ## Deployment flow
 
+Temporary deployment flow (to local machine):
+
+* if never done before, copy the full `homeremote-nestjs-server` dir to a new `homeremote-v2-dist` dir, including `node_modules`, `src`, root files, etc.
+* in `homeremote-v2` (client) dir, run `npm run build` (prebuild should run, running unit tests and linting)
+* run `npm run deploy` (copies generated `build` dir to `homeremote-nestjs-server/client`)
+* in `homeremote-nestjs-server` (server) dir, run `npm run build` (prebuild should run, running unit tests and linting)
+* run `npm run deploy` (copies generated `dist` dir to `homeremote-v2-dist/dist`)
+* ? potentially clean `homeremote-v2-dist` dir and reset everything from step 1?
+* in `homeremote-v2-dist` dir, run `nvm use 12 && node dist/src/main`
+
+Target deployment flow:
+
 * in web project do a "build"?
 * copy assets to "client" dir?
 * commit/tag/push
