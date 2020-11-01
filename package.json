@@ -20,7 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@mdworld/homeremote-stream-player-server": "^1.4.1",
+    "@mdworld/homeremote-stream-player-server": "^1.6.1",
     "@nestjs/common": "^6.10.14",
     "@nestjs/core": "^6.10.14",
     "@nestjs/jwt": "^7.0.0",

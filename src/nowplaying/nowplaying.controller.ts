@@ -5,20 +5,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-const {
-  getNowPlaying,
-  ChannelName,
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-} = require('@mdworld/homeremote-stream-player-server');
-
-interface NowPlayingResponse {
-  artist: string;
-  title: string;
-  last_updated: string;
-  songImageUrl: string;
-  name: string;
-  imageUrl: string;
-}
+import { getNowPlaying, ChannelName, NowPlayingResponse } from '@mdworld/homeremote-stream-player-server';
 
 @Controller('api/nowplaying')
 export class NowplayingController {
