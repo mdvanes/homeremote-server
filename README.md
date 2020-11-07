@@ -2,15 +2,15 @@
 ## Development flow
 
 * set port in main.ts to 3001
-* start dev server: `npm run start:dev`
-* in the UI project start the dev server with `npm run start:dev`
+* start dev server: `yarn start:dev`
+* in the UI project start the dev server with `yarn start:dev`
 * generate a new route (i.e. controller), e.g. /api/switches with `nest g co switches`
 * add prefix `api/` manually in /switches/switches.controller.ts
 
 ## Adding a user
 
 * enable getHash in profile.controllers.ts
-* start dev server: `npm run start:dev`
+* start dev server: `yarn start:dev`
 * for password "test", call (e.g. in browser) `http://localhost:3000/api/gethash?password=test`
 * store the hash with the username in auth.json
 * disable getHash in profile.controllers.ts
@@ -20,10 +20,10 @@
 Temporary deployment flow (to local machine):
 
 * if never done before, copy the full `homeremote-nestjs-server` dir to a new `homeremote-v2-dist` dir, including `node_modules`, `src`, root files, etc.
-* in `homeremote-v2` (client) dir, run `npm run build` (prebuild should run, running unit tests and linting)
-* run `npm run deploy` (copies generated `build` dir to `homeremote-nestjs-server/client`)
-* in `homeremote-nestjs-server` (server) dir, run `npm run build` (prebuild should run, running unit tests and linting)
-* run `npm run deploy` (copies generated `dist` dir to `homeremote-v2-dist/dist`)
+* in `homeremote-v2` (client) dir, run `yarn build` (prebuild should run, running unit tests and linting)
+* run `yarn deploy` (copies generated `build` dir to `homeremote-nestjs-server/client`)
+* in `homeremote-nestjs-server` (server) dir, run `yarn build` (prebuild should run, running unit tests and linting)
+* run `yarn deploy` (copies generated `dist` dir to `homeremote-v2-dist/dist`)
 * ? potentially clean `homeremote-v2-dist` dir and reset everything from step 1?
 * in `homeremote-v2-dist` dir, run `nvm use 12 && node dist/src/main`
 
@@ -55,28 +55,28 @@ $ npm install
 
 ```bash
 # development
-$ npm run start
+$ yarn start
 
 * and open http://localhost:3000/auth/login
 * log in with john/test ?
 * create hash from password: http://localhost:3000/api/gethash?password=test
 
 # watch mode
-$ npm run start:dev
+$ yarn start:dev
 
 # production mode
-$ npm run start:prod
+$ yarn start:prod
 ```
 
 ## Test
 
 ```bash
 # unit tests
-$ npm run test
+$ yarn test
 
 # e2e tests
-$ npm run test:e2e
+$ yarn test:e2e
 
 # test coverage
-$ npm run test:cov
+$ yarn test:cov
 ```
