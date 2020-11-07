@@ -18,7 +18,7 @@ export class NowplayingController {
   // TODO the plugin does not support authentication yet!
   //   @UseGuards(JwtAuthGuard)
   @Get('radio2')
-  async getRadio2(): Promise<NowPlayingResponse> {
+  async getRadio2(): Promise<NowPlayingResponse | undefined> {
     try {
       const response = await getNowPlaying(ChannelName.RADIO2);
       return response;
@@ -29,7 +29,7 @@ export class NowplayingController {
   }
 
   @Get('radio3')
-  async getRadio3(): Promise<NowPlayingResponse> {
+  async getRadio3(): Promise<NowPlayingResponse | undefined> {
     try {
       const response = await getNowPlaying(ChannelName.RADIO3);
       return response;

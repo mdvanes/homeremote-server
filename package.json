@@ -22,7 +22,7 @@
     "deploy": "cp -r dist ../homeremote-v2-dist"
   },
   "dependencies": {
-    "@mdworld/homeremote-stream-player-server": "^1.6.1",
+    "@mdworld/homeremote-stream-player-server": "^1.6.2",
     "@nestjs/common": "^6.10.14",
     "@nestjs/core": "^6.10.14",
     "@nestjs/jwt": "^7.0.0",
