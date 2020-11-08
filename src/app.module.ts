@@ -10,6 +10,7 @@ import { ProfileController } from './profile/profile.controller';
 import { LoginController } from './login/login.controller';
 import { SwitchesController } from './switches/switches.controller';
 import { NowplayingController } from './nowplaying/nowplaying.controller';
+import { StatusController } from './status/status.controller';
 
 @Module({
   // TODO static serving should be guarded see https://docs.nestjs.com/techniques/mvc
@@ -18,7 +19,7 @@ import { NowplayingController } from './nowplaying/nowplaying.controller';
       rootPath: join(__dirname, '..', 'client'),
     }), AuthModule, UsersModule],
   // controllers: [AppController,
-  controllers: [FooController, ProfileController, LoginController, SwitchesController, NowplayingController],
+  controllers: [FooController, ProfileController, LoginController, SwitchesController, NowplayingController, StatusController],
   providers: [AppService],
 })
 export class AppModule {}
