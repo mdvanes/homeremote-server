@@ -1,131 +1,349 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard</title>
+  <head>
+    <meta charset="UTF-8" />
+    <title>🔒 Authentication Testing Dashboard</title>
     <style>
-        body {
-            border: 10px dashed dodgerblue;
-            font-family: sans-serif;
-            font-size: 1.5rem;
-            padding: 2rem;
-        }
+      body {
+        background-color: dodgerblue;
+        font-family: sans-serif;
+        font-size: 1.5rem;
+        padding: 2rem;
+      }
+
+      label {
+        display: block;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <h1>Authentication Testing Dashboard</h1>
 
-<!-- TODO https://stackoverflow.com/questions/26340275/where-to-save-a-jwt-in-a-browser-based-application-and-how-to-use-it
- Probably easiest to use
-localStorage.setItem('token', 'asY-x34SfYPk'); // write
-console.log(localStorage.getItem('token')); // read
- -->
+    <p>
+      When developing, the front-end runs on port 3000 and the back-end on port
+      3001. On production all is run on port 3200. CORS authentication is hard
+      [link to article] and overkill for developing. This means that
+      authentication will be turned off when developing
+    </p>
 
-<!-- is send to /auth/login -->
-<form id="form">
-    <input type="text" name="username" id="username">
-    <input type="password" name="password" id="password">
-    <input type="submit">
-</form>
+    <!-- 
+      TODO add a util to register a new user/password
 
-<button id="logout">Log out</button>
+      TODO add link to article above
 
-<h2>Some endpoints</h2>
+      TODO show a banner in the real front-end when auth is turned off. 
+      
+      TODO 2fa with certificates
 
-<ul>
-    <li><a href="/api/cats">/api/cats</a> <button id="cats">get</button></li>
-    <li><a href="/api/foo">/api/foo</a> <button id="foo">get</button></li>
-    <li><a href="/api/profile">/api/profile</a> <button id="profile">get</button></li>
-    <li><a href="/api/switches">/api/switches</a> <button id="switches">get</button></li>
-</ul>
+      TODO Document this: the old (and commonly used) solution: https://stackoverflow.com/questions/26340275/where-to-save-a-jwt-in-a-browser-based-application-and-how-to-use-it
+      Probably easiest to use
+      localStorage.setItem('token', 'asY-x34SfYPk'); // write
+      console.log(localStorage.getItem('token')); // read
+    -->
 
-<script>
-    // TODO do this on the server with an old fashioned POST?
-    document.getElementById("form").addEventListener('submit', (ev) => {
-      ev.preventDefault();
-      fetch('/auth/login', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          username: document.getElementById('username').value,
-          password: document.getElementById('password').value
-        })
-      })
-        .then(data => data.json())
-        .then(data => {
-          console.log(data);
-          localStorage.setItem('token', data.access_token);
-        })
-    });
+    <!-- is send to /auth/login -->
+    <h2>not logged in (TODO change to logged in as ...)</h2>
+    <form id="form">
+      <label
+        >user name:
+        <input type="text" name="username" id="username" value="john"
+      /></label>
+      <label
+        >password:
+        <input type="password" name="password" id="password" value="test"
+      /></label>
+      <input type="submit" value="Log in" />
+    </form>
 
-    document.getElementById('logout').addEventListener('click', (ev) => {
-      localStorage.removeItem('token');
-      // TODO Logout: also invalidate on the server!
-    });
-    // TODO JWT is good for APIs, not sessions. Is it good for WebSocket/FTP update?
+    <button id="logout">Log out</button>
 
-    document.getElementById('cats').addEventListener('click', (ev) => {
-      const token = localStorage.getItem('token');
+    <login-form></login-form>
 
-      fetch('/api/cats', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
+    <h2>Endpoints that require authentication</h2>
+
+    <ul id="endpoints1">
+      <li><a href="/api/foo">/api/foo</a> <button id="foo">get</button></li>
+      <li><a href="/api/foo">/api/foo</a> <button id="foo">status</button></li>
+      <li>
+        <a href="/api/profile">/api/profile</a>
+        <button id="profile">get</button>
+      </li>
+      <li>
+        <a href="/api/switches">/api/switches</a>
+        <button id="switches">get</button>
+      </li>
+    </ul>
+
+    <endpoint-list name="elname"></endpoint-list>
+
+    <h2>Endpoints without authentication</h2>
+
+    <li>
+      <a href="/api/nowplaying">/api/nowplaying</a>
+      <button id="foo">nowplaying</button>
+    </li>
+
+    <template id="login-template">
+      <h2>🔓 NOT LOGGED IN</h2>
+      <form id="form">
+        <label
+          >user name:
+          <input type="text" name="username" id="username" value="john"
+        /></label>
+        <label
+          >password:
+          <input type="password" name="password" id="password" value="test"
+        /></label>
+        <input type="submit" value="Log in" />
+      </form>
+
+      <button id="logout">Log out</button>
+    </template>
+
+    <template id="endpoint-list-template">
+      <div></div>
+    </template>
+
+    <template id="endpoint-item-template">
+      <style>
+        main {
+          color: #333;
+          border: 1px solid #333;
+          border-radius: 4px;
+          display: inline-block;
+          padding: 0.5rem;
+          margin: 0.2rem;
+          background-color: #eee;
+          box-shadow: 2px 2px #222;
         }
-      })
-        .then(data => data.text())
-        .then(data => {
-          console.log(data);
+      </style>
+      <main>
+        <h1><a href=""></a></h1>
+        <button>get</button>
+        <div id="result">result</div>
+      </main>
+    </template>
+
+    <script>
+      // const createEndpointLi = (endpointName) => {
+      //   const li = document.createElement('li');
+      //   const aLink = document.createElement('a');
+      //   aLink.appendChild(document.createTextNode(`v2: ${endpointName}`));
+      //   li.appendChild(aLink);
+      //   return li;
+      // };
+
+      const getSome = (name, resultElem) => () => {
+        fetch(`/api/${name}`, {
+          method: 'GET',
         })
-    });
+          .then((data) => data.text())
+          .then((data) => {
+            console.log(data);
+            resultElem.innerHTML = data;
+          });
+      };
 
-    document.getElementById('foo').addEventListener('click', (ev) => {
-      const token = localStorage.getItem('token');
+      const endpointItemTemplate = document.querySelector(
+        '#endpoint-item-template',
+      );
+      class EndpointItem extends HTMLElement {
+        constructor() {
+          super();
+          const shadowRoot = this.attachShadow({ mode: 'open' });
+          const node = endpointItemTemplate.content.cloneNode(true);
 
-      fetch('/api/foo', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
+          const name = this.getAttribute('name');
+
+          node.querySelector('a').innerHTML = `/api/${name}`;
+          node.querySelector('a').href = `/api/${name}`;
+
+          node
+            .querySelector('button')
+            .addEventListener(
+              'click',
+              getSome(name, node.getElementById('result')),
+            );
+
+          shadowRoot.appendChild(node);
         }
-      })
-        .then(data => data.text())
-        .then(data => {
-          console.log(data);
-        })
-    });
+      }
 
-    document.getElementById('profile').addEventListener('click', (ev) => {
-      const token = localStorage.getItem('token');
+      const endpointListTemplate = document.querySelector(
+        '#endpoint-list-template',
+      );
+      class EndpointList extends HTMLElement {
+        constructor() {
+          super();
+          const shadowRoot = this.attachShadow({ mode: 'open' });
+          // console.log(endpointListTemplate);
+          const node = endpointListTemplate.content.cloneNode(true);
 
-      fetch('/api/profile', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
+          const y = this.getAttribute('name');
+          console.log(y);
+
+          const endpoints1Ul = node.querySelector('div');
+          // const lis = ['foo', 'status'].map(createEndpointLi);
+          // lis.forEach((li) => endpoints1Ul.appendChild(li));
+
+          // shadowRoot.appendChild(node);
+
+          // shadowRoot.appendChild(document.createElement('endpoint-item'));
+          endpoints1Ul.innerHTML = ['foo', 'status', 'profile', 'switches']
+            .map((item) => `<endpoint-item name="${item}"></endpoint-item>`)
+            .join('');
+          shadowRoot.appendChild(node);
         }
-      })
-        .then(data => data.text())
-        .then(data => {
-          console.log(data);
-        })
-    });
+      }
 
-    document.getElementById('switches').addEventListener('click', (ev) => {
-      const token = localStorage.getItem('token');
+      const loginTemplate = document.querySelector('#login-template');
+      class LoginForm extends HTMLElement {
+        constructor() {
+          super();
+          const shadowRoot = this.attachShadow({ mode: 'open' });
+          const node = loginTemplate.content.cloneNode(true);
+          const h2 = node.querySelector('h2');
 
-      fetch('/api/switches', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
+          // Token is in cookie, payload is {"id":1,"name":"john"}
+          node.getElementById('form').addEventListener('submit', (ev) => {
+            ev.preventDefault();
+            fetch('/auth/login', {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+              }),
+            })
+              .then((data) => data.json())
+              .then((data) => {
+                h2.innerHTML = `🔒 LOGGED IN AS ${data.name}`;
+              });
+          });
+
+          node.querySelector('button').addEventListener('click', (ev) => {
+            fetch(`/auth/logout`, {
+              method: 'GET',
+            })
+              .then((data) => data.text())
+              .then((data) => {
+                h2.innerHTML = `🔓 LOGGED IN AS ${data.name}`;
+              });
+          });
+
+          shadowRoot.appendChild(node);
         }
-      })
-        .then(data => data.text())
-        .then(data => {
-          console.log(data);
-        })
-    });    
-</script>
+      }
 
-</body>
+      const addCustomElements = () => {
+        customElements.define('endpoint-item', EndpointItem);
+        customElements.define('endpoint-list', EndpointList);
+        customElements.define('login-form', LoginForm);
+      };
+      addCustomElements();
+
+      // Get token from payload (old)
+      // document.getElementById('form').addEventListener('submit', (ev) => {
+      //   ev.preventDefault();
+      //   fetch('/auth/login', {
+      //     method: 'POST',
+      //     headers: {
+      //       Accept: 'application/json',
+      //       'Content-Type': 'application/json',
+      //     },
+      //     body: JSON.stringify({
+      //       username: document.getElementById('username').value,
+      //       password: document.getElementById('password').value,
+      //     }),
+      //   })
+      //     .then((data) => data.json())
+      //     .then((data) => {
+      //       console.log(data);
+      //       localStorage.setItem('token', data.access_token);
+      //     });
+      // });
+
+      // document.getElementById('logout').addEventListener('click', (ev) => {
+      //   fetch(`/auth/logout`, {
+      //     method: 'GET',
+      //   })
+      //     .then((data) => data.text())
+      //     .then((data) => {
+      //       console.log(data);
+      //       // resultElem.innerHTML = data;
+      //     });
+
+      //   // Old:
+      //   localStorage.removeItem('token');
+      //   // TODO Old: Logout: also invalidate on the server!
+      // });
+      // TODO JWT is good for APIs, not sessions. Is it good for WebSocket/FTP update?
+
+      // document.getElementById('cats').addEventListener('click', (ev) => {
+      //   const token = localStorage.getItem('token');
+
+      //   fetch('/api/cats', {
+      //     method: 'GET',
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   })
+      //     .then((data) => data.text())
+      //     .then((data) => {
+      //       console.log(data);
+      //     });
+      // });
+
+      // Old
+      document.getElementById('foo').addEventListener('click', (ev) => {
+        const token = localStorage.getItem('token');
+
+        fetch('/api/foo', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((data) => data.text())
+          .then((data) => {
+            console.log(data);
+          });
+      });
+
+      // Old
+      document.getElementById('profile').addEventListener('click', (ev) => {
+        const token = localStorage.getItem('token');
+
+        fetch('/api/profile', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((data) => data.text())
+          .then((data) => {
+            console.log(data);
+          });
+      });
+
+      // Old
+      document.getElementById('switches').addEventListener('click', (ev) => {
+        const token = localStorage.getItem('token');
+
+        fetch('/api/switches', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((data) => data.text())
+          .then((data) => {
+            console.log(data);
+          });
+      });
+    </script>
+  </body>
 </html>
