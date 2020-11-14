@@ -42,26 +42,11 @@
     -->
 
     <!-- is send to /auth/login -->
-    <h2>not logged in (TODO change to logged in as ...)</h2>
-    <form id="form">
-      <label
-        >user name:
-        <input type="text" name="username" id="username" value="john"
-      /></label>
-      <label
-        >password:
-        <input type="password" name="password" id="password" value="test"
-      /></label>
-      <input type="submit" value="Log in" />
-    </form>
-
-    <button id="logout">Log out</button>
-
     <login-form></login-form>
 
     <h2>Endpoints that require authentication</h2>
 
-    <ul id="endpoints1">
+    <!-- <ul id="endpoints1">
       <li><a href="/api/foo">/api/foo</a> <button id="foo">get</button></li>
       <li><a href="/api/foo">/api/foo</a> <button id="foo">status</button></li>
       <li>
@@ -72,16 +57,13 @@
         <a href="/api/switches">/api/switches</a>
         <button id="switches">get</button>
       </li>
-    </ul>
+    </ul> -->
 
-    <endpoint-list name="elname"></endpoint-list>
+    <endpoint-list endpoints="foo,status,switches"></endpoint-list>
 
     <h2>Endpoints without authentication</h2>
 
-    <li>
-      <a href="/api/nowplaying">/api/nowplaying</a>
-      <button id="foo">nowplaying</button>
-    </li>
+    <endpoint-list endpoints="profile,nowplaying/radio2"></endpoint-list>
 
     <template id="login-template">
       <h2>🔓 NOT LOGGED IN</h2>
@@ -111,7 +93,7 @@
           border: 1px solid #333;
           border-radius: 4px;
           display: inline-block;
-          padding: 0.5rem;
+          padding: 1rem;
           margin: 0.2rem;
           background-color: #eee;
           box-shadow: 2px 2px #222;
@@ -176,25 +158,48 @@
         constructor() {
           super();
           const shadowRoot = this.attachShadow({ mode: 'open' });
-          // console.log(endpointListTemplate);
           const node = endpointListTemplate.content.cloneNode(true);
 
-          const y = this.getAttribute('name');
-          console.log(y);
+          const endpoints = this.getAttribute('endpoints');
 
-          const endpoints1Ul = node.querySelector('div');
-          // const lis = ['foo', 'status'].map(createEndpointLi);
-          // lis.forEach((li) => endpoints1Ul.appendChild(li));
-
-          // shadowRoot.appendChild(node);
-
-          // shadowRoot.appendChild(document.createElement('endpoint-item'));
-          endpoints1Ul.innerHTML = ['foo', 'status', 'profile', 'switches']
+          const div = node.querySelector('div');
+          div.innerHTML = endpoints
+            .split(',')
             .map((item) => `<endpoint-item name="${item}"></endpoint-item>`)
             .join('');
           shadowRoot.appendChild(node);
         }
       }
+
+      const createPostLogin = (h2, username, password) => (ev) => {
+        ev.preventDefault();
+        // Token is in cookie, payload is {"id":1,"name":"john"}
+        fetch('/auth/login', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username,
+            password,
+          }),
+        })
+          .then((data) => data.json())
+          .then((data) => {
+            h2.innerHTML = `🔒 LOGGED IN AS ${data.name}`;
+          });
+      };
+
+      const createGetLogout = (h2) => (ev) => {
+        fetch(`/auth/logout`, {
+          method: 'GET',
+        })
+          .then((data) => data.text())
+          .then((data) => {
+            h2.innerHTML = `🔓 LOGGED IN AS ${data.name}`;
+          });
+      };
 
       const loginTemplate = document.querySelector('#login-template');
       class LoginForm extends HTMLElement {
@@ -203,36 +208,18 @@
           const shadowRoot = this.attachShadow({ mode: 'open' });
           const node = loginTemplate.content.cloneNode(true);
           const h2 = node.querySelector('h2');
+          const username = node.getElementById('username').value;
+          const password = node.getElementById('password').value;
 
-          // Token is in cookie, payload is {"id":1,"name":"john"}
-          node.getElementById('form').addEventListener('submit', (ev) => {
-            ev.preventDefault();
-            fetch('/auth/login', {
-              method: 'POST',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                username: document.getElementById('username').value,
-                password: document.getElementById('password').value,
-              }),
-            })
-              .then((data) => data.json())
-              .then((data) => {
-                h2.innerHTML = `🔒 LOGGED IN AS ${data.name}`;
-              });
-          });
-
-          node.querySelector('button').addEventListener('click', (ev) => {
-            fetch(`/auth/logout`, {
-              method: 'GET',
-            })
-              .then((data) => data.text())
-              .then((data) => {
-                h2.innerHTML = `🔓 LOGGED IN AS ${data.name}`;
-              });
-          });
+          node
+            .getElementById('form')
+            .addEventListener(
+              'submit',
+              createPostLogin(h2, username, password),
+            );
+          node
+            .querySelector('button')
+            .addEventListener('click', createGetLogout(h2));
 
           shadowRoot.appendChild(node);
         }
@@ -297,53 +284,53 @@
       //     });
       // });
 
-      // Old
-      document.getElementById('foo').addEventListener('click', (ev) => {
-        const token = localStorage.getItem('token');
+      // // Old
+      // document.getElementById('foo').addEventListener('click', (ev) => {
+      //   const token = localStorage.getItem('token');
 
-        fetch('/api/foo', {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-          .then((data) => data.text())
-          .then((data) => {
-            console.log(data);
-          });
-      });
+      //   fetch('/api/foo', {
+      //     method: 'GET',
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   })
+      //     .then((data) => data.text())
+      //     .then((data) => {
+      //       console.log(data);
+      //     });
+      // });
 
-      // Old
-      document.getElementById('profile').addEventListener('click', (ev) => {
-        const token = localStorage.getItem('token');
+      // // Old
+      // document.getElementById('profile').addEventListener('click', (ev) => {
+      //   const token = localStorage.getItem('token');
 
-        fetch('/api/profile', {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-          .then((data) => data.text())
-          .then((data) => {
-            console.log(data);
-          });
-      });
+      //   fetch('/api/profile', {
+      //     method: 'GET',
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   })
+      //     .then((data) => data.text())
+      //     .then((data) => {
+      //       console.log(data);
+      //     });
+      // });
 
-      // Old
-      document.getElementById('switches').addEventListener('click', (ev) => {
-        const token = localStorage.getItem('token');
+      // // Old
+      // document.getElementById('switches').addEventListener('click', (ev) => {
+      //   const token = localStorage.getItem('token');
 
-        fetch('/api/switches', {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-          .then((data) => data.text())
-          .then((data) => {
-            console.log(data);
-          });
-      });
+      //   fetch('/api/switches', {
+      //     method: 'GET',
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   })
+      //     .then((data) => data.text())
+      //     .then((data) => {
+      //       console.log(data);
+      //     });
+      // });
     </script>
   </body>
 </html>
