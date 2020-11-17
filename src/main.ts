@@ -1,10 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import cookieParser from 'cookie-parser';
 
 declare const module: any;
 
 // TODO
-// Conditional Authentication & CORS - i.e. attempt to call from some other port on localhost. Authentication could be conditional in the client (only when devmode=true)
 // Guard static files
 
 const DEV_PORT = 3001; // Development
@@ -13,6 +13,7 @@ const PROD_PORT = 3200; // Production
 async function bootstrap() {
   console.log("mode=", process.env.NODE_ENV)
   const app = await NestFactory.create(AppModule);
+  app.use(cookieParser());
   if (process.env.NODE_ENV === "DEVELOPMENT") {
     app.enableCors();
     await app.listen(DEV_PORT);

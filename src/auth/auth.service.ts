@@ -3,6 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
 import { User, UsersService } from '../users/users.service';
 
+export const EXPIRES_IN_S = 30 * 24 * 60 * 60; // days * hours * minutes * seconds;
+
 @Injectable()
 export class AuthService {
   private readonly logger: Logger;
@@ -31,10 +33,17 @@ export class AuthService {
     return null;
   }
 
-  async login({ id, name }: User) {
+  // TODO remove?
+  // async login({ id, name }: User) {
+  //   const payload = { sub: id, username: name };
+  //   return {
+  //     access_token: this.jwtService.sign(payload),
+  //   };
+  // }
+
+  public getCookieWithJwtToken({ id, name }: User): string {
     const payload = { sub: id, username: name };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+    const token = this.jwtService.sign(payload);
+    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${EXPIRES_IN_S}`; // Max-Age in seconds.
   }
 }
