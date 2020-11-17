@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { AuthService, EXPIRES_IN_S } from './auth.service';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { UsersModule } from '../users/users.module';
@@ -13,7 +13,7 @@ import { jwtConstants } from './constants';
     PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '600s' },
+      signOptions: { expiresIn: `${EXPIRES_IN_S * 1000}` }, // in ms, see https://github.com/auth0/node-jsonwebtoken#usage
     }),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
