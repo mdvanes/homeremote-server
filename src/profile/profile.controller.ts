@@ -2,15 +2,19 @@ import {
   Controller,
   Get,
   Logger,
-  Query,
+  // Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
-import bcrypt from 'bcrypt';
+// import bcrypt from 'bcrypt';
+import { LoginRequest } from '../login/LoginRequest.types';
+import { User } from '../users/users.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-const saltRounds = 10;
 
-@Controller()
+// const saltRounds = 10;
+// const generateHash = (password: string): Promise<string> => bcrypt.hash(password, saltRounds);
+
+@Controller('api/profile')
 export class ProfileController {
   private readonly logger: Logger;
 
@@ -19,21 +23,21 @@ export class ProfileController {
   }
 
   // Use this to show the "logged in as user"
-  // @UseGuards(JwtAuthGuard)
-  // @Get('api/profile')
-  // getProfile(@Request() req: any): string {
-  //   return req.user;
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Get('current')
+  getProfile(@Request() req: LoginRequest): User {
+    return req.user;
+  }
 
   // Use to create a hash, because there is no "create new user" flow implemented
   // Should not have guard
-  // @Get('api/gethash')
-  // async getHash(@Query() query) {
+  // @Get('gethash')
+  // async getHash(@Query() query: { password: string }): Promise<string> {
   //   try {
-  //     const hash = await bcrypt.hash(query.password, saltRounds);
-  //     return hash;
+  //     return generateHash(query.password);
   //   } catch (err) {
   //     this.logger.error(`Can't hash password ${err}`);
+  //     return "";
   //   }
   // }
 }

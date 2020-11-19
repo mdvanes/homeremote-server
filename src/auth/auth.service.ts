@@ -33,14 +33,6 @@ export class AuthService {
     return null;
   }
 
-  // TODO remove?
-  // async login({ id, name }: User) {
-  //   const payload = { sub: id, username: name };
-  //   return {
-  //     access_token: this.jwtService.sign(payload),
-  //   };
-  // }
-
   public getCookieWithJwtToken({ id, name }: User): string {
     const payload = { sub: id, username: name };
     const token = this.jwtService.sign(payload);
