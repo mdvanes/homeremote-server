@@ -3,21 +3,24 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
 import { jwtConstants } from './constants';
+import { User } from '../users/users.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([(request: Request) => {
-        return request?.cookies?.Authentication;
-      }]),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (request: Request) => {
+          return request?.cookies?.Authentication;
+        },
+      ]),
       ignoreExpiration: false,
       secretOrKey: jwtConstants.secret,
     });
   }
 
-  async validate(payload: any) {
-    console.log("when going into validate?"); // TODO is this function ever used?
-    return { userId: payload.sub, username: payload.username };
+  async validate(payload: { sub: number; username: string }): Promise<User> {
+    // This is called each time @UseGuards(JwtAuthGuard) is used
+    return { id: payload.sub, name: payload.username };
   }
 }
