@@ -4,8 +4,10 @@ import {
   Logger,
   HttpException,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { getNowPlaying, ChannelName, NowPlayingResponse } from '@mdworld/homeremote-stream-player-server';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('api/nowplaying')
 export class NowplayingController {
@@ -15,8 +17,7 @@ export class NowplayingController {
     this.logger = new Logger(NowplayingController.name);
   }
 
-  // TODO the plugin does not support authentication yet!
-  //   @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('radio2')
   async getRadio2(): Promise<NowPlayingResponse | undefined> {
     try {
@@ -28,6 +29,7 @@ export class NowplayingController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('radio3')
   async getRadio3(): Promise<NowPlayingResponse | undefined> {
     try {
