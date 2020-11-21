@@ -1,7 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { CookieOptions } from 'express';
 import { User } from 'src/users/users.service';
 import { AuthService } from '../auth/auth.service';
 import { LoginController } from './login.controller';
+import { LoginRequest } from './LoginRequest.types';
 
 describe('Login Controller', () => {
   let controller: LoginController;
@@ -11,15 +13,11 @@ describe('Login Controller', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [LoginController],
       // to load the service with real implementation, use: providers: [AuthService],
-      providers: [{ provide: AuthService, useValue: { login: jest.fn() } }],
+      providers: [{ provide: AuthService, useValue: { getCookieWithJwtToken: jest.fn() } }],
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
     controller = module.get<LoginController>(LoginController);
-  });
-
-  it('/GET a static login page', async () => {
-    expect(await controller.getLoginPage()).toContain('<title>Login</title>');
   });
 
   it('/POST returns a token for a user', async () => {
@@ -28,15 +26,15 @@ describe('Login Controller', () => {
       name: 'Lee',
     };
 
-    const mockLoginResponse = { access_token: 'my_fake_access_token' };
+    const mockCookie: ["Authentication", string, CookieOptions] = ["Authentication", "some_token", {}];
 
-    jest.spyOn(authService, 'login').mockResolvedValue(mockLoginResponse);
+    jest.spyOn(authService, 'getCookieWithJwtToken').mockReturnValue(mockCookie);
 
     const result = await controller.login({
       user: mockUser,
-    });
+    } as LoginRequest);
 
-    expect(authService.login).toHaveBeenCalledWith(mockUser);
-    expect(result).toEqual(mockLoginResponse);
+    expect(authService.getCookieWithJwtToken).toHaveBeenCalledWith(mockUser);
+    expect(result).toEqual(mockUser);
   });
 });
