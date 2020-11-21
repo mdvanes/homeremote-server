@@ -31,7 +31,7 @@ export class LoginController {
     */
     const cookie = this.authService.getCookieWithJwtToken(req.user);
     if (req.res) {
-      req.res.setHeader('Set-Cookie', cookie);
+      req.res.cookie(...cookie);
     }
     return req.user;
   }

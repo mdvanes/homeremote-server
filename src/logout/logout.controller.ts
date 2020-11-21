@@ -1,7 +1,9 @@
 import { Controller, Get, Logger, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { User } from '../users/users.service';
-import { AuthService, EXPIRES_IN_S } from '../auth/auth.service';
+import {
+  AuthService,
+clearCookie } from '../auth/auth.service';
 
 @Controller('auth/logout')
 export class LogoutController {
@@ -15,10 +17,7 @@ export class LogoutController {
   async logout(@Req() req: Request): Promise<User> {
     this.logger.verbose(`logout: ${JSON.stringify(req.user)}`);
     if (req.res) {
-      req.res.setHeader(
-        'Set-Cookie',
-        `Authentication=; HttpOnly; Path=/; ${EXPIRES_IN_S}`, // Max-Age in seconds.
-      );
+      req.res.clearCookie(...clearCookie);
     }
     return {
       id: 0,
