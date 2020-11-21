@@ -7,7 +7,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { getNowPlaying, ChannelName, NowPlayingResponse } from '@mdworld/homeremote-stream-player-server';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('api/nowplaying')
 export class NowplayingController {

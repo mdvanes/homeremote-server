@@ -14,7 +14,7 @@ describe('Logout Controller', () => {
     controller = module.get<LogoutController>(LogoutController);
   });
 
-  it('should be defined', async () => {
+  it('logs out the user on GET', async () => {
     const mockUser: User = {
       id: 1,
       name: 'Lee',
