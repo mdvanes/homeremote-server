@@ -58,7 +58,7 @@ export class AuthService {
       token,
       {
         ...cookieOptionsBase,
-        maxAge: EXPIRES_IN_S,
+        maxAge: EXPIRES_IN_S * 1000,
       },
     ];
   }
