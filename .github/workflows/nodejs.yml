@@ -18,6 +18,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: yarn install --frozen-lockfile
-    - run: cp auth.json.example auth.json && yarn lint && yarn test:cov && yarn build --if-present
+    - run: cp auth.json.example auth.json && yarn lint && yarn test:cov && yarn build
       env:
         CI: true
