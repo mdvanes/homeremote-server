@@ -1,5 +1,12 @@
-import { Controller, Get, HttpException, HttpStatus, Logger, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import {
+  Controller,
+  Get,
+  // HttpException,
+  // HttpStatus,
+  Logger,
+  UseGuards,
+} from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('api/status')
 export class StatusController {
@@ -12,9 +19,10 @@ export class StatusController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async getStatus(): Promise<{ status: string }> {
-    // return { status: 'Tabcdafaf Essfaafaa' };
-    const error = new Error('fake error');
-    this.logger.error(error);
-    throw new HttpException(error, HttpStatus.NOT_IMPLEMENTED);
+    // TODO get command from "service configuration" and execute
+    return { status: 'Tabcdafaf ' + Date.now() };
+    // const error = new Error('fake error');
+    // this.logger.error(error);
+    // throw new HttpException(error, HttpStatus.NOT_IMPLEMENTED);
   }
 }
