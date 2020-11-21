@@ -29,6 +29,6 @@ describe('AuthService', () => {
       sub: mockUser.id,
       username: mockUser.name,
     });
-    expect(result).toEqual(["Authentication", "{\"sub\":1,\"username\":\"Lee\"}", {"httpOnly": true, "maxAge": 2592000, "path": "/"}]);
+    expect(result).toEqual(["Authentication", "{\"sub\":1,\"username\":\"Lee\"}", {"httpOnly": true, "maxAge": 2592000000, "path": "/"}]);
   });
 });
