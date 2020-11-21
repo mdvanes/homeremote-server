@@ -37,6 +37,7 @@ export class AuthService {
       }
       const isEqual = await bcrypt.compare(pass, user.hash);
       if (isEqual) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { hash, ...userWithoutHash } = user;
         return userWithoutHash;
       }

@@ -1,5 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller } from '@nestjs/common';
+// import { AppService } from './app.service';
 
 // Create a new controller with `nest g controller cats`
 

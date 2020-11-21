@@ -1,15 +1,13 @@
 import { Controller, Get, Logger, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { User } from '../users/users.service';
-import {
-  AuthService,
-clearCookie } from '../auth/auth.service';
+import { clearCookie } from '../auth/auth.service';
 
 @Controller('auth/logout')
 export class LogoutController {
   private readonly logger: Logger;
 
-  constructor(private readonly authService: AuthService) {
+  constructor() {
     this.logger = new Logger(LogoutController.name);
   }
 

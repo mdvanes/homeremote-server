@@ -24,11 +24,11 @@ describe('AuthService', () => {
   it('gets a token for a user on login', async () => {
     jest.spyOn(jwtService, 'sign').mockImplementation(x => JSON.stringify(x));
     const mockUser: User = { id: 1, name: 'Lee' };
-    const result = await service.login(mockUser);
+    const result = await service.getCookieWithJwtToken(mockUser);
     expect(jwtService.sign).toHaveBeenCalledWith({
       sub: mockUser.id,
       username: mockUser.name,
     });
-    expect(result).toEqual({ access_token: '{"sub":1,"username":"Lee"}' });
+    expect(result).toEqual(["Authentication", "{\"sub\":1,\"username\":\"Lee\"}", {"httpOnly": true, "maxAge": 2592000, "path": "/"}]);
   });
 });
