@@ -35,7 +35,8 @@ Temporary deployment flow (to local machine):
 * in `homeremote-nestjs-server` (server) dir, run `yarn build` (prebuild should run, running unit tests and linting)
 * run `yarn deploy` (copies generated `dist` dir to `homeremote-v2-dist/dist`)
 * ? potentially clean `homeremote-v2-dist` dir and reset everything from step 1?
-* in `homeremote-v2-dist` dir, run `nvm use 12 && node dist/src/main`
+* in `homeremote-v2-dist` dir, update `.env` if needed
+* in `homeremote-v2-dist` dir, run `nvm use 15 && node dist/src/main`
 
 Target deployment flow:
 
