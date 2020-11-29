@@ -10,6 +10,7 @@ import {
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import youtubedl from 'youtube-dl';
 import { ConfigService } from '@nestjs/config';
+import id3 from 'id3-writer';
 
 interface GetInfoBody {
   url: string;
@@ -24,6 +25,7 @@ interface GetMusicBody {
   url: string;
   title: string;
   artist: string;
+  album: string;
 }
 
 interface FetchMusicReturned {
@@ -44,7 +46,12 @@ const getInfoPromise = (url: string): Promise<FetchInfoReturned> =>
     });
   });
 
-const getMusicPromise = (rootPath: string, url: string, artist: string, title: string): Promise<FetchMusicReturned> => {
+const getMusicPromise = (
+  rootPath: string,
+  url: string,
+  artist: string,
+  title: string,
+): Promise<FetchMusicReturned> => {
   return new Promise((resolve, reject) => {
     let fileName = encodeURIComponent(url);
     if (artist && artist.length > 0 && title && title.length > 0) {
@@ -68,31 +75,36 @@ const getMusicPromise = (rootPath: string, url: string, artist: string, title: s
       if (err) {
         reject(new Error(`GetMusic failed: ${url} ${err}`));
       } else {
-        console.log(output);
-        // log.info('youtubedl.exec finished:', output);
+        // console.log(output);
         resolve({ path: targetPath, fileName });
       }
     });
   });
 };
 
-// const setMetadataPromise = (log, path, fileName, artist, title, album) => {
-//   return new Promise((resolve, reject) => {
-//       if(artist && artist.length > 0 && title && title.length > 0) {
-//           const file = new id3.File(path);
-//           const meta = new id3.Meta({ artist, title, album });
+const setMetadataPromise = (
+  path: string,
+  fileName: string,
+  artist: string,
+  title: string,
+  album: string,
+): Promise<FetchMusicReturned> => {
+  return new Promise((resolve, reject) => {
+    if (artist && artist.length > 0 && title && title.length > 0) {
+      const file = new id3.File(path);
+      const meta = new id3.Meta({ artist, title, album });
+      const writer = new id3.Writer(); // In old implementation this was right after imports
 
-//           writer.setFile(file).write(meta, function(err) {
-//               if (err) {
-//                   reject('set metadata failed: ' + err);
-//               } else {
-//                   log.info('id3 finished');
-//                   resolve({path, fileName});
-//               }
-//           });
-//       }
-//   });
-// };
+      writer.setFile(file).write(meta, function (err: Error) {
+        if (err) {
+          reject('set metadata failed: ' + err);
+        } else {
+          resolve({ path, fileName });
+        }
+      });
+    }
+  });
+};
 
 @Controller('api/urltomusic')
 export class UrltomusicController {
@@ -108,61 +120,38 @@ export class UrltomusicController {
     @Body() { url }: GetInfoBody,
   ): Promise<FetchInfoReturned | { error: string }> {
     if (url) {
-      // TODO implement get youtube
       this.logger.verbose(`Getting info for: ${url}`);
-
-      // const { title, artist } = await getInfoPromise(url);
-
-      // return { title: 'some title', artist: 'some artist' };
       return getInfoPromise(url);
     } else {
-      // If Url not set, the error "not acceptable" is shown in the UI instead of "url is required"
       throw new HttpException('url is required', HttpStatus.NOT_ACCEPTABLE);
-      // return { error: "url is required" }; // Return 200 OK, handle in client
     }
-
-    // const statusCmd = this.configService.get<string>('STATUS_CMD') || '';
-    // const statusField1 = this.configService.get<string>('STATUS_FIELD1') || '';
-    // const statusField2 = this.configService.get<string>('STATUS_FIELD2') || '';
-    // try {
-    //   const json = await execToJson(statusCmd);
-    //   return { status: `${json[statusField1]} ${json[statusField2]}` };
-    // } catch (err) {
-    //   this.logger.error(err);
-    //   throw new HttpException("error", HttpStatus.INTERNAL_SERVER_ERROR);
-    // }
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('/getmusic')
   async getMusic(
-    @Body() { url, artist, title }: GetMusicBody,
+    @Body() { url, artist, title, album }: GetMusicBody,
   ): Promise<FetchMusicReturned | { error: string }> {
-    if (url && artist && title) {
+    if (url && artist && title && album) {
       this.logger.verbose(`Getting music for: ${url}`);
       const rootPath = this.configService.get<string>('URL_TO_MUSIC_ROOTPATH');
-      if(!rootPath) {
-        throw new HttpException('rootPath not configured', HttpStatus.NOT_ACCEPTABLE);
+      if (!rootPath) {
+        throw new HttpException(
+          'rootPath not configured',
+          HttpStatus.NOT_ACCEPTABLE,
+        );
       }
-      const result = await getMusicPromise(rootPath, url, artist, title);
-      this.logger.verbose(`Got music for ${url} to ${result.fileName}`);
-      // TODO implement set metadata
+      const { path, fileName } = await getMusicPromise(rootPath, url, artist, title);
+      this.logger.verbose(`Got music for ${url} to ${fileName}`);
+      const result = await setMetadataPromise( path, fileName, artist, title, album );
+      this.logger.verbose(`Set metadata for ${fileName}`);
       return result;
     } else {
       // If Url not set, the error "not acceptable" is shown in the UI instead of "url is required"
-      throw new HttpException('url, artist & title are required', HttpStatus.NOT_ACCEPTABLE);
-      // return { error: "url is required" }; // Return 200 OK, handle in client
+      throw new HttpException(
+        'url, artist, title, and album are required',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
     }
-
-    // const statusCmd = this.configService.get<string>('STATUS_CMD') || '';
-    // const statusField1 = this.configService.get<string>('STATUS_FIELD1') || '';
-    // const statusField2 = this.configService.get<string>('STATUS_FIELD2') || '';
-    // try {
-    //   const json = await execToJson(statusCmd);
-    //   return { status: `${json[statusField1]} ${json[statusField2]}` };
-    // } catch (err) {
-    //   this.logger.error(err);
-    //   throw new HttpException("error", HttpStatus.INTERNAL_SERVER_ERROR);
-    // }
   }
 }
