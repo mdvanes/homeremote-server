@@ -41,7 +41,7 @@ const getInfoPromise = (url: string): Promise<FetchInfoReturned> =>
         const [artist, title] = info.title.split(' - ');
         resolve({ title, artist });
       } else {
-        reject(new Error(`GetInfo failed: ${info} - ${err}`));
+        reject(new Error(`GetInfo failed: ${JSON.stringify(info)} - ${err}`));
       }
     });
   });
