@@ -72,10 +72,11 @@ Notes:
 
 ```bash
 # development
+$ start proxy docker container
 $ yarn start
 
 * and open http://localhost:3000/auth/login
-* log in with john/test ?
+* log in with flap/1
 * create hash from password: http://localhost:3000/api/gethash?password=test
 
 # watch mode
