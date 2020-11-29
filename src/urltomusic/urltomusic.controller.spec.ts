@@ -23,7 +23,7 @@ const writeSpy = jest.fn().mockImplementation((meta, callback) => {
 });
 
 const writerSpy = jest.spyOn(id3, 'Writer').mockImplementation(() => ({
-  setFile: (file) => {
+  setFile: (/* file */) => {
     return {
       write: writeSpy,
     };
