@@ -5,11 +5,11 @@ import {
   HttpStatus,
   Logger,
   UseGuards,
-  Req,
   Body,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import youtubedl from 'youtube-dl';
+import { ConfigService } from '@nestjs/config';
 
 interface GetInfoBody {
   url: string;
@@ -44,18 +44,13 @@ const getInfoPromise = (url: string): Promise<FetchInfoReturned> =>
     });
   });
 
-// TODO
-const settings = {
-  musicpath: '/',
-};
-
-const getMusicPromise = (url: string, artist: string, title: string): Promise<FetchMusicReturned> => {
+const getMusicPromise = (rootPath: string, url: string, artist: string, title: string): Promise<FetchMusicReturned> => {
   return new Promise((resolve, reject) => {
     let fileName = encodeURIComponent(url);
     if (artist && artist.length > 0 && title && title.length > 0) {
       fileName = `${artist} - ${title}`;
     }
-    let targetPath = `${settings.musicpath}/${fileName}`;
+    let targetPath = `${rootPath}/${fileName}`;
     // First send to mp4, mp3 is created with --extract-audio
     const args = [
       '-o',
@@ -103,7 +98,7 @@ const getMusicPromise = (url: string, artist: string, title: string): Promise<Fe
 export class UrltomusicController {
   private readonly logger: Logger;
 
-  constructor() {
+  constructor(private configService: ConfigService) {
     this.logger = new Logger(UrltomusicController.name);
   }
 
@@ -145,7 +140,11 @@ export class UrltomusicController {
   ): Promise<FetchMusicReturned | { error: string }> {
     if (url && artist && title) {
       this.logger.verbose(`Getting music for: ${url}`);
-      const result = await getMusicPromise(url, artist, title);
+      const rootPath = this.configService.get<string>('URL_TO_MUSIC_ROOTPATH');
+      if(!rootPath) {
+        throw new HttpException('rootPath not configured', HttpStatus.NOT_ACCEPTABLE);
+      }
+      const result = await getMusicPromise(rootPath, url, artist, title);
       this.logger.verbose(`Got music for ${url} to ${result.fileName}`);
       // TODO implement set metadata
       return result;
