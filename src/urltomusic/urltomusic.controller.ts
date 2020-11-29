@@ -71,7 +71,7 @@ const getMusicPromise = (
     // Extension is needed for setting metadata
     targetPath += '.mp3';
     fileName += '.mp3';
-    youtubedl.exec(url, args, {}, (err, output: any) => {
+    youtubedl.exec(url, args, {}, (err /*, output: any */) => {
       if (err) {
         reject(new Error(`GetMusic failed: ${url} ${err}`));
       } else {
