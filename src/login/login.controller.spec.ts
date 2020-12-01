@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CookieOptions } from 'express';
-import { User } from 'src/users/users.service';
+import { User } from '../users/users.service';
 import { AuthService } from '../auth/auth.service';
 import { LoginController } from './login.controller';
 import { LoginRequest } from './LoginRequest.types';
