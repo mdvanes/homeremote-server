@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { LoginRequest } from 'src/login/LoginRequest.types';
-import { User } from 'src/users/users.service';
+import { LoginRequest } from '../login/LoginRequest.types';
+import { User } from '../users/users.service';
 import { LogoutController } from './logout.controller';
 
 describe('Logout Controller', () => {
