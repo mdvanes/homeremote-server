@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import * as Got from 'got';
 import {
   DomoticzSwitch,
@@ -11,13 +12,22 @@ const gotSpy = jest.spyOn(Got, 'default');
 
 describe('Switches Controller', () => {
   let controller: SwitchesController;
+  let configService: ConfigService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [SwitchesController],
+      providers: [{ provide: ConfigService, useValue: { get: jest.fn() } }],
     }).compile();
 
+    configService = module.get<ConfigService>(ConfigService);
     controller = module.get<SwitchesController>(SwitchesController);
+
+    jest.spyOn(configService, 'get').mockImplementation((envName) => {
+      if (envName === 'DOMOTICZ_URI') {
+        return 'some.url';
+      }
+    });
   });
 
   it('returns the switches states on /GET ', async () => {
