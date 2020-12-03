@@ -1,6 +1,7 @@
 # Build this image: *cd to parent dir!* `docker build -t mdworld/homeremote:latest -f homeremote-nestjs-server/Dockerfile .`
 # Show images: `docker images`
-# Run container from this image: `docker run --rm --name homeremote -p 3201:3200 mdworld/homeremote:latest`
+# Run container from this image: `docker run --rm --name homeremote -v /home/martin/ZNoBackup/homeremote-building/settings:/app -p 3201:3200 mdworld/homeremote:latest`
+#   docker run --rm --name homeremote -v /home/martin/ZNoBackup/repos/homeremote-building/settings/auth.json:/app/auth.json -p 3201:3200 mdworld/homeremote:latest
 # Export this image: `docker save mdworld/homeremote:latest -o mdworld_homeremote__latest.tar`
 # Remove image from the store: `docker rmi mdworld/homeremote:latest`
 # Import an exported image: `docker load -i mdworld_homeremote__latest.tar`
@@ -36,6 +37,7 @@ RUN yarn build
 
 RUN rm ./auth.json
 
+# https://docs.docker.com/storage/bind-mounts/#mount-into-a-non-empty-directory-on-the-container
 # start app
 CMD ["yarn", "start:prod"]
 
