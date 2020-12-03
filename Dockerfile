@@ -17,7 +17,8 @@ ENV PATH /app/node_modules/.bin:$PATH
 # install app dependencies
 COPY homeremote-server/package.json ./
 COPY homeremote-server/yarn.lock ./
-RUN apk add --no-cache --virtual .gyp python make g++ curl \
+RUN apk add --no-cache curl \
+    && apk add --no-cache --virtual .gyp python make g++ \
     && yarn --frozen-lockfile \
     && apk del .gyp
 
@@ -28,7 +29,12 @@ COPY homeremote-server/. ./
 # add client
 COPY homeremote/build/. ./client
 
+# Set-up auth.json for unit tests on prebuild
+RUN cp ./auth.json.example ./auth.json
+
 RUN yarn build
+
+RUN rm ./auth.json
 
 # start app
 CMD ["yarn", "start:prod"]
