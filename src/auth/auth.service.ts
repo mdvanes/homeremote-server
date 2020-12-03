@@ -33,7 +33,7 @@ export class AuthService {
     const user = await this.usersService.findOne(username);
     try {
       if (!user) {
-        throw new Error(`no user find for username ${username}`);
+        throw new Error(`no user found for username ${username}`);
       }
       const isEqual = await bcrypt.compare(pass, user.hash);
       if (isEqual) {
