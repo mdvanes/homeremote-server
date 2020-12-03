@@ -1,4 +1,4 @@
-# Build this image: `docker build -t mdworld/homeremote:latest .`
+# Build this image: *cd to parent dir!* `docker build -t mdworld/homeremote:latest -f homeremote-nestjs-server/Dockerfile .`
 # Show images: `docker images`
 # Run container from this image: `docker run --rm --name homeremote -p 3201:3200 mdworld/homeremote:latest`
 # Export this image: `docker save mdworld/homeremote:latest -o mdworld_homeremote__latest.tar`
@@ -15,14 +15,20 @@ WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 
 # install app dependencies
-COPY package.json ./
-COPY yarn.lock ./
-RUN apk add --no-cache --virtual .gyp python make g++ \
+COPY homeremote-server/package.json ./
+COPY homeremote-server/yarn.lock ./
+RUN apk add --no-cache --virtual .gyp python make g++ curl \
     && yarn --frozen-lockfile \
     && apk del .gyp
 
-# add app
-COPY . ./
+# add server
+COPY homeremote-server/. ./
+
+# TODO build client outside Dockerfile in build script so a set of static assets is available for copying here. No runtime dependencies are needed here.
+# add client
+COPY homeremote/build/. ./client
+
+RUN yarn build
 
 # start app
 CMD ["yarn", "start:prod"]
