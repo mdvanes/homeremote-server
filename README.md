@@ -9,6 +9,50 @@ Build with [Nest](https://github.com/nestjs/nest) framework TypeScript starter r
 $ yarn
 ```
 
+Note:
+https://stackoverflow.com/questions/53963007/error-while-running-nestjs-in-production-mode-cannot-find-module#54049216
+import { EntityService } from '../shared/service-common'; //correct way
+import { EntityService } from 'src/shared/service-common'; // wrong autoimport
+To fix auto import, I have added this setting in VS Code 
+"typescript.preferences.importModuleSpecifier": "relative"
+> OK, but why does this only happen for NestJS?
+
+Questions for deployment:
+
+* deployment flow?
+    * see repos/homeremote-building, there is a file:
+        ```bash
+        #!/bin/bash
+
+        nvm use 15
+
+        # TODO git clone fresh repos
+
+        cd homeremote
+        yarn --frozen-lockfile
+        yarn build
+
+        cd ..
+        docker build -t mdworld/homeremote:latest -f homeremote-server/Dockerfile .
+        ```
+    * run ./build.sh
+    * set up /someDir/repos/homeremote-building/settings/ with .env and auth.json
+    * run `docker run...` (see comment in Dockerfile)
+    * 
+    * OLD
+    * automate: when version changes, set a tag in git
+    * in new dir, git clone ...-server
+    * https://docs.docker.com/engine/reference/commandline/build/#git-repositories
+        * e.g.: `docker build https://github.com/mdvanes/myrepo.git#mytag:myfolder`
+    * del .git dir
+    * yarn install
+    * yarn build
+    * yarn start:prod
+    * yarn pack?
+* in Docker? Multi stage build? https://medium.com/@basakabhijoy/dockerise-a-nestjs-app-2b7f42fc333f
+* how to add client dist to server dist?
+* unrelated: https://github.com/creack/docker-firefox/blob/master/Dockerfile -> https://docs.docker.com/engine/reference/commandline/build/#build-with-url
+
 ## Development flow
 
 * start nginx proxy: `yarn start:dev-nginx` (see NGINX chapter), this will run on port 3002
