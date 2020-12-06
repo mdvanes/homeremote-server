@@ -57,7 +57,11 @@ describe('Urltomusic Controller', () => {
     it('splits title to artist and title', async () => {
       const result = await controller.getInfo({ url: 'some_url' });
       expect(getInfoSpy).toHaveBeenCalledWith('some_url', expect.anything());
-      expect(result).toEqual({ artist: 'foo', title: 'bar' });
+      expect(result).toEqual({
+        artist: 'foo',
+        title: 'bar',
+        versionInfo: 'undefined/bin unexpected state/undefined',
+      });
     });
 
     it('falls back to only artist', async () => {
@@ -66,7 +70,10 @@ describe('Urltomusic Controller', () => {
       });
 
       const result = await controller.getInfo({ url: 'some_url' });
-      expect(result).toEqual({ artist: 'foo bar' });
+      expect(result).toEqual({
+        artist: 'foo bar',
+        versionInfo: 'undefined/bin unexpected state/undefined',
+      });
     });
 
     it('throws error on remote error', async () => {
@@ -133,7 +140,7 @@ describe('Urltomusic Controller', () => {
 
     it('throws error on remote error', async () => {
       execSpy.mockImplementation((url, args, options, callback) =>
-        callback("URL DOES NOT EXIST", {} as any),
+        callback('URL DOES NOT EXIST', {} as any),
       );
 
       await expect(

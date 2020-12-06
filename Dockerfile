@@ -3,8 +3,8 @@
 # Run container from this image: `docker run --rm --name homeremote -v /absPath/hr/build-docker/settings:/app -p 3201:3200 mdworld/homeremote:latest`
 # when developing, with -rm:
 # docker run --rm --name homeremote \
-#     --env-file /absPath/repos/hr/build-docker/settings/.env \
-#     -v /absPath/repos/hr/build-docker/settings/auth.json:/app/dist/auth.json \
+#     --env-file $(pwd)/settings/.env \
+#     -v $(pwd)/settings/auth.json:/app/dist/auth.json \
 #     -p 3201:3200 \
 #     mdworld/homeremote:latest
 # Export this image: `docker save mdworld/homeremote:latest -o mdworld_homeremote__latest.tar`
@@ -53,4 +53,3 @@ CMD ["yarn", "start:prod"]
 # TODO multi stage build!
 
 # TODO add .dockerignore?
-# TODO git clone fresh repos

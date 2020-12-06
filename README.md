@@ -24,6 +24,7 @@ Questions for deployment:
         ```bash
         #!/bin/bash
 
+        source ~/.nvm/nvm.sh
         nvm use 15
 
         # git pull to latest
@@ -36,17 +37,18 @@ Questions for deployment:
 
         cd ..
         docker build -t mdworld/homeremote:latest -f homeremote-server/Dockerfile .
+        docker save mdworld/homeremote:latest -o mdworld_homeremote__latest.tar
         ```
     * update the versions in package.json in client and server repo
-    * push & build
-    * tag client and server in github with the new version number: git tag -a v2.0.0 -m "publish version 2.0.0"
+    * tag client and server with the new version number: git tag -a v2.0.0 -m "publish version 2.0.0"
+    * build and push with tags: git push --follow-tags
     * run ./build.sh
     * set up /someDir/repos/hr/build-docker/settings/ with .env and auth.json
     * run `docker run...` (see comment in Dockerfile)
     * export with `docker save...` (see comment in Dockerfile)
     * copy exported .tar to the server
-    * on the server, set up /someDir/repos/hr/build-docker/settings/ with .env and auth.json
-    * run `docker run...` (see comment in Dockerfile) BUT WITHOUT -rm
+    * on the server, set up /someDir/hr/settings/ with .env and auth.json
+    * run `docker run...` from /someDir/hr/run.sh (see comment in Dockerfile) BUT WITHOUT -rm
     * 
     * OLD
     * automate: when version changes, set a tag in git

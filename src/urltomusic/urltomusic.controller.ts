@@ -16,9 +16,12 @@ interface GetInfoBody {
   url: string;
 }
 
-interface FetchInfoReturned {
+interface TitleArtist {
   title: string;
   artist: string;
+}
+interface FetchInfoReturned extends TitleArtist {
+  versionInfo: string;
 }
 
 interface GetMusicBody {
@@ -33,7 +36,7 @@ interface FetchMusicReturned {
   fileName: string;
 }
 
-const getInfoPromise = (url: string): Promise<FetchInfoReturned> =>
+const getInfoPromise = (url: string): Promise<TitleArtist> =>
   new Promise((resolve, reject) => {
     youtubedl.getInfo(url, (err, info: any) => {
       if (info && info.title && !err) {
@@ -45,6 +48,40 @@ const getInfoPromise = (url: string): Promise<FetchInfoReturned> =>
       }
     });
   });
+
+const getBinVersion = (): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    youtubedl.exec('', ['--version'], {}, (err, output: any) => {
+      if (err) {
+        reject(new Error(`GetBinVersion failed: ${err}`));
+      } else {
+        resolve(output[0]);
+      }
+    });
+  });
+};
+
+const updateBin = (): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    youtubedl.exec('', ['--update'], {}, (err /*, output: any */) => {
+      if (err) {
+        // stdout: 'Updating to version 2020.12.05 ...\n' + 'Updated youtube-dl. Restart youtube-dl to use the new version.',
+        // stdout: 'youtube-dl is up-to-date (2020.12.05)',
+        const isBusyUpdating = err.stdout.indexOf('Updating to version') > -1;
+        const isUpToDate = err.stdout.indexOf('youtube-dl is up-to-date') > -1;
+        if (isBusyUpdating) {
+          resolve('bin updating');
+        } else if (isUpToDate) {
+          resolve('bin up-to-date');
+        } else {
+          reject(new Error(`UpdateBin failed: ${err}`));
+        }
+      } else {
+        resolve('bin unexpected state');
+      }
+    });
+  });
+};
 
 const getMusicPromise = (
   rootPath: string,
@@ -121,7 +158,14 @@ export class UrltomusicController {
   ): Promise<FetchInfoReturned | { error: string }> {
     if (url) {
       this.logger.verbose(`Getting info for: ${url}`);
-      return getInfoPromise(url);
+      const binVersion1 = await getBinVersion();
+      const binUpdateResult = await updateBin();
+      const binVersion2 = await getBinVersion();
+      const titleArtist = await getInfoPromise(url);
+      return {
+        ...titleArtist,
+        versionInfo: `${binVersion1}/${binUpdateResult}/${binVersion2}`
+      };
     } else {
       throw new HttpException('url is required', HttpStatus.NOT_ACCEPTABLE);
     }
@@ -141,9 +185,20 @@ export class UrltomusicController {
           HttpStatus.NOT_ACCEPTABLE,
         );
       }
-      const { path, fileName } = await getMusicPromise(rootPath, url, artist, title);
+      const { path, fileName } = await getMusicPromise(
+        rootPath,
+        url,
+        artist,
+        title,
+      );
       this.logger.verbose(`Got music for ${url} to ${fileName}`);
-      const result = await setMetadataPromise( path, fileName, artist, title, album );
+      const result = await setMetadataPromise(
+        path,
+        fileName,
+        artist,
+        title,
+        album,
+      );
       this.logger.verbose(`Set metadata for ${fileName}`);
       return result;
     } else {
