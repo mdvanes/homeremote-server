@@ -23,8 +23,8 @@ ENV PATH /app/node_modules/.bin:$PATH
 # install app dependencies
 COPY homeremote-server/package.json ./
 COPY homeremote-server/yarn.lock ./
-RUN apk add --no-cache curl \
-    && apk add --no-cache --virtual .gyp python make g++ \
+RUN apk add --no-cache curl python \
+    && apk add --no-cache --virtual .gyp make g++ \
     && yarn --frozen-lockfile \
     && apk del .gyp
 
