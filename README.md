@@ -39,7 +39,7 @@ Questions for deployment:
         ```
     * update the versions in package.json in client and server repo
     * push & build
-    * tag client and server in github with the new version number
+    * tag client and server in github with the new version number: git tag -a v2.0.0 -m "publish version 2.0.0"
     * run ./build.sh
     * set up /someDir/repos/hr/build-docker/settings/ with .env and auth.json
     * run `docker run...` (see comment in Dockerfile)
