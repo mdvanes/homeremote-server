@@ -20,13 +20,15 @@ To fix auto import, I have added this setting in VS Code
 Questions for deployment:
 
 * deployment flow?
-    * see repos/homeremote-building, there is a file:
+    * see repos/hr/build-docker, there is a file `build.sh`:
         ```bash
         #!/bin/bash
 
         nvm use 15
 
-        # TODO git clone fresh repos
+        # git pull to latest
+        git -C homeremote pull
+        git -C homeremote-server pull
 
         cd homeremote
         yarn --frozen-lockfile
@@ -35,9 +37,16 @@ Questions for deployment:
         cd ..
         docker build -t mdworld/homeremote:latest -f homeremote-server/Dockerfile .
         ```
+    * update the versions in package.json in client and server repo
+    * push & build
+    * tag client and server in github with the new version number
     * run ./build.sh
-    * set up /someDir/repos/homeremote-building/settings/ with .env and auth.json
+    * set up /someDir/repos/hr/build-docker/settings/ with .env and auth.json
     * run `docker run...` (see comment in Dockerfile)
+    * export with `docker save...` (see comment in Dockerfile)
+    * copy exported .tar to the server
+    * on the server, set up /someDir/repos/hr/build-docker/settings/ with .env and auth.json
+    * run `docker run...` (see comment in Dockerfile) BUT WITHOUT -rm
     * 
     * OLD
     * automate: when version changes, set a tag in git

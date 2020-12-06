@@ -1,9 +1,10 @@
 # Build this image: *cd to parent dir!* `docker build -t mdworld/homeremote:latest -f homeremote-nestjs-server/Dockerfile .`
 # Show images: `docker images`
-# Run container from this image: `docker run --rm --name homeremote -v /absPath/homeremote-building/settings:/app -p 3201:3200 mdworld/homeremote:latest`
+# Run container from this image: `docker run --rm --name homeremote -v /absPath/hr/build-docker/settings:/app -p 3201:3200 mdworld/homeremote:latest`
+# when developing, with -rm:
 # docker run --rm --name homeremote \
-#     --env-file /absPath/repos/homeremote-building/settings/.env \
-#     -v /absPath/repos/homeremote-building/settings/auth.json:/app/dist/auth.json \
+#     --env-file /absPath/repos/hr/build-docker/settings/.env \
+#     -v /absPath/repos/hr/build-docker/settings/auth.json:/app/dist/auth.json \
 #     -p 3201:3200 \
 #     mdworld/homeremote:latest
 # Export this image: `docker save mdworld/homeremote:latest -o mdworld_homeremote__latest.tar`
