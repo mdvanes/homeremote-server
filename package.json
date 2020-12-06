@@ -1,9 +1,11 @@
 {
-  "name": "homeremote-nestjs-server",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "name": "homeremote-server",
+  "version": "2.0.0",
+  "private": true,
+  "repository": "https://github.com/mdvanes/homeremote-server",
+  "author": "M.D. van Es",
   "license": "MIT",
+  "engine": "node >= 15.0.0",
   "scripts": {
     "validate": "npm run lint && npm run test:cov",
     "prebuild": "rimraf dist && npm run validate",
