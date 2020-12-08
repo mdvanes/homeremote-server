@@ -65,4 +65,4 @@ RUN apk add --no-cache curl python
 # start app
 CMD ["yarn", "start:prod"]
 
-# TODO multi stage build! (with this change the image size already shrinks from 561MB to 348MB)
+# TODO multi stage build! (just by adding the second stage with copy, the image size already shrinks from 561MB to 348MB. By just installing the devDependencies the image shrinks from 348MB to 197MB)
