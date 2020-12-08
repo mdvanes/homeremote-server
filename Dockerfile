@@ -25,8 +25,7 @@ COPY homeremote-server/package.json ./
 COPY homeremote-server/yarn.lock ./
 RUN apk add --no-cache curl python \
     && apk add --no-cache --virtual .gyp make g++ \
-    && yarn --frozen-lockfile \
-    && apk del .gyp
+    && yarn --frozen-lockfile
 
 # add server
 COPY homeremote-server/. ./
@@ -46,6 +45,11 @@ RUN rm ./auth.json
 # the file that is created by yarn build
 RUN rm ./dist/auth.json
 
+# Remove node_modules
+RUN rm -rf node_modules \
+    # Install without devDependencies
+    && yarn --frozen-lockfile --prod \
+    && apk del .gyp
 
 # TODO add .dockerignore?
 
@@ -54,6 +58,7 @@ RUN rm ./dist/auth.json
 FROM node:15.0.1-alpine
 WORKDIR /app
 COPY --from=build-env /build/ /app/
+# Install runtime dependencies
 RUN apk add --no-cache curl python
 
 # https://docs.docker.com/storage/bind-mounts/#mount-into-a-non-empty-directory-on-the-container
