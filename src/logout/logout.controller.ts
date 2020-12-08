@@ -20,6 +20,7 @@ export class LogoutController {
     return {
       id: 0,
       name: '',
+      displayName: ""
     };
   }
 }

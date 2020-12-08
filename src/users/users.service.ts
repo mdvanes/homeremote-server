@@ -5,6 +5,7 @@ export interface StoredUser {
   id: number;
   name: string;
   hash: string;
+  displayName: string;
 }
 
 export type User = Omit<StoredUser, "hash">;

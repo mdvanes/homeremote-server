@@ -13,7 +13,12 @@ describe('Login Controller', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [LoginController],
       // to load the service with real implementation, use: providers: [AuthService],
-      providers: [{ provide: AuthService, useValue: { getCookieWithJwtToken: jest.fn() } }],
+      providers: [
+        {
+          provide: AuthService,
+          useValue: { getCookieWithJwtToken: jest.fn() },
+        },
+      ],
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
@@ -23,12 +28,19 @@ describe('Login Controller', () => {
   it('/POST returns a token for a user', async () => {
     const mockUser: User = {
       id: 1,
-      name: 'Lee',
+      name: 'lee',
+      displayName: 'Stan',
     };
 
-    const mockCookie: ["Authentication", string, CookieOptions] = ["Authentication", "some_token", {}];
+    const mockCookie: ['Authentication', string, CookieOptions] = [
+      'Authentication',
+      'some_token',
+      {},
+    ];
 
-    jest.spyOn(authService, 'getCookieWithJwtToken').mockReturnValue(mockCookie);
+    jest
+      .spyOn(authService, 'getCookieWithJwtToken')
+      .mockReturnValue(mockCookie);
 
     const result = await controller.login({
       user: mockUser,

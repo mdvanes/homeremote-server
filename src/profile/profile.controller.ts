@@ -4,11 +4,12 @@ import {
   Logger,
   // Query,
   Request,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 // import bcrypt from 'bcrypt';
-import { LoginRequest } from '../login/LoginRequest.types';
-import { User } from '../users/users.service';
+import { AuthenticatedRequest } from '../login/LoginRequest.types';
+import { User, UsersService } from '../users/users.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 // const saltRounds = 10;
@@ -18,15 +19,22 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 export class ProfileController {
   private readonly logger: Logger;
 
-  constructor() {
+  constructor(private readonly usersService: UsersService) {
     this.logger = new Logger(ProfileController.name);
   }
 
   // Use this to show the "logged in as user"
   @UseGuards(JwtAuthGuard)
   @Get('current')
-  getProfile(@Request() req: LoginRequest): User {
-    return req.user;
+  async getProfile(@Request() req: AuthenticatedRequest): Promise<User> {
+    this.logger.verbose(`current: ${JSON.stringify(req.user)}`);
+    const user = await this.usersService.findOne(req.user.name);
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { hash, ...userWithoutHash } = user;
+    return userWithoutHash;
   }
 
   // Use to create a hash, because there is no "create new user" flow implemented

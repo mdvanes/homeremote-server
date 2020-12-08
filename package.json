@@ -7,8 +7,6 @@
   "license": "MIT",
   "engine": "node >= 15.0.0",
   "scripts": {
-    "validate": "npm run lint && npm run test:cov",
-    "prebuild": "rimraf dist && npm run validate",
     "build": "nest build && cp -r client dist",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "NODE_ENV=DEVELOPMENT nest start",
@@ -18,11 +16,14 @@
     "start:prod": "node dist/src/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "typecheck": "tsc --noEmit --incremental false",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "validate": "npm run lint && npm run typecheck && npm run test:cov",
+    "prebuild": "rimraf dist && npm run validate",
     "deploy": "cp -r dist ../homeremote-v2-dist"
   },
   "dependencies": {
