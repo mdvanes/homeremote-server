@@ -12,13 +12,13 @@
 # Import an exported image: `docker load -i mdworld_homeremote__latest.tar`
 
 # pull official base image
-FROM node:15.0.1-alpine
+FROM node:15.0.1-alpine AS build-env
 
 # set working directory
-WORKDIR /app
+WORKDIR /build
 
 # add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+ENV PATH /build/node_modules/.bin:$PATH
 
 # install app dependencies
 COPY homeremote-server/package.json ./
@@ -46,10 +46,18 @@ RUN rm ./auth.json
 # the file that is created by yarn build
 RUN rm ./dist/auth.json
 
+
+# TODO add .dockerignore?
+
+# final stage
+
+FROM node:15.0.1-alpine
+WORKDIR /app
+COPY --from=build-env /build/ /app/
+RUN apk add --no-cache curl python
+
 # https://docs.docker.com/storage/bind-mounts/#mount-into-a-non-empty-directory-on-the-container
 # start app
 CMD ["yarn", "start:prod"]
 
-# TODO multi stage build!
-
-# TODO add .dockerignore?
+# TODO multi stage build! (with this change the image size already shrinks from 561MB to 348MB)
