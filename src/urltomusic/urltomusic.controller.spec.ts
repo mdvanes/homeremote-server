@@ -4,6 +4,13 @@ import youtubedl from "youtube-dl";
 import id3 from "id3-writer";
 import { UrltomusicController } from "./urltomusic.controller";
 
+jest.mock("youtube-dl", () => {
+    return {
+        exec: jest.fn(),
+        getInfo: jest.fn(),
+    };
+});
+
 const getInfoSpy = jest
     .spyOn(youtubedl, "getInfo")
     .mockImplementation((url, callback) => {
