@@ -17,7 +17,8 @@ describe('Logout Controller', () => {
   it('logs out the user on GET', async () => {
     const mockUser: User = {
       id: 1,
-      name: 'Lee',
+      name: 'lee',
+      displayName: 'Stan',
     };
     expect(controller).toBeDefined();
     const result = await controller.logout({
@@ -26,6 +27,7 @@ describe('Logout Controller', () => {
     expect(result).toEqual({
       id: 0,
       name: '',
+      displayName: '',
     });
   });
 });

@@ -19,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: { sub: number; username: string }): Promise<User> {
+  async validate(payload: { sub: number; username: string }): Promise<Omit<User, "displayName">> {
     // This is called each time @UseGuards(JwtAuthGuard) is used
     return { id: payload.sub, name: payload.username };
   }

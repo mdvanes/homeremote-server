@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
 import { CookieOptions } from 'express';
+import { LoginRequest } from 'src/login/LoginRequest.types';
 import { User, UsersService } from '../users/users.service';
 
 export const EXPIRES_IN_S = 30 * 24 * 60 * 60; // days * hours * minutes * seconds;
@@ -50,7 +51,7 @@ export class AuthService {
   public getCookieWithJwtToken({
     id,
     name,
-  }: User): [typeof AUTHENTICATION_COOKIE_NAME, string, CookieOptions] {
+  }: LoginRequest["user"]): [typeof AUTHENTICATION_COOKIE_NAME, string, CookieOptions] {
     const payload = { sub: id, username: name };
     const token = this.jwtService.sign(payload);
     return [
