@@ -17,53 +17,6 @@ To fix auto import, I have added this setting in VS Code
 "typescript.preferences.importModuleSpecifier": "relative"
 > OK, but why does this only happen for NestJS?
 
-Questions for deployment:
-
-* deployment flow?
-    * see repos/hr/build-docker, there is a file `build.sh`:
-        ```bash
-        #!/bin/bash
-
-        source ~/.nvm/nvm.sh
-        nvm use 15
-
-        # git pull to latest
-        git -C homeremote pull
-        git -C homeremote-server pull
-
-        cd homeremote
-        yarn --frozen-lockfile
-        yarn build
-
-        cd ..
-        docker build -t mdworld/homeremote:latest -f homeremote-server/Dockerfile .
-        docker save mdworld/homeremote:latest -o mdworld_homeremote__latest.tar
-        ```
-    * update the versions in package.json in client and server repo
-    * tag client and server with the new version number: git tag -a v2.0.0 -m "publish version 2.0.0"
-    * build and push with tags: git push --follow-tags
-    * run ./build.sh
-    * set up /someDir/repos/hr/build-docker/settings/ with .env and auth.json
-    * run `docker run...` (see comment in Dockerfile)
-    * export with `docker save...` (see comment in Dockerfile)
-    * copy exported .tar to the server
-    * on the server, set up /someDir/hr/settings/ with .env and auth.json
-    * run `docker run...` from /someDir/hr/run.sh (see comment in Dockerfile) BUT WITHOUT -rm
-    * 
-    * OLD
-    * automate: when version changes, set a tag in git
-    * in new dir, git clone ...-server
-    * https://docs.docker.com/engine/reference/commandline/build/#git-repositories
-        * e.g.: `docker build https://github.com/mdvanes/myrepo.git#mytag:myfolder`
-    * del .git dir
-    * yarn install
-    * yarn build
-    * yarn start:prod
-    * yarn pack?
-* in Docker? Multi stage build? https://medium.com/@basakabhijoy/dockerise-a-nestjs-app-2b7f42fc333f
-* how to add client dist to server dist?
-* unrelated: https://github.com/creack/docker-firefox/blob/master/Dockerfile -> https://docs.docker.com/engine/reference/commandline/build/#build-with-url
-
 ## Development flow
 
 * start nginx proxy: `yarn start:dev-nginx` (see NGINX chapter), this will run on port 3002
@@ -80,9 +33,9 @@ Questions for deployment:
 * store the hash with the username in auth.json
 * disable getHash in profile.controllers.ts
 
-## Deployment flow
+## Deployment Strategy
 
-Temporary deployment flow (to local machine):
+Old deployment flow (to local machine):
 
 * if never done before, copy the full `homeremote-nestjs-server` dir to a new `homeremote-v2-dist` dir, including `node_modules`, `src`, root files, etc.
 * in `homeremote-v2` (client) dir, run `yarn build` (prebuild should run, running unit tests and linting)
@@ -93,13 +46,52 @@ Temporary deployment flow (to local machine):
 * in `homeremote-v2-dist` dir, update `.env` if needed
 * in `homeremote-v2-dist` dir, run `nvm use 15 && node dist/src/main`
 
-Target deployment flow:
+Deployment Strategy (Docker)
 
-* in web project do a "build"?
-* copy assets to "client" dir?
-* commit/tag/push
-* on server: git pull and run
-* later: git pull and build from Dockerfile
+1. Make sure there is a file `repos/hr/build-docker/build.sh`:
+    ```bash
+    #!/bin/bash
+
+    source ~/.nvm/nvm.sh
+    nvm use 15
+
+    # git pull to latest
+    git -C homeremote pull
+    git -C homeremote-server pull
+
+    cd homeremote
+    yarn --frozen-lockfile
+    yarn build
+
+    cd ..
+    docker build -t mdworld/homeremote:latest -f homeremote-server/Dockerfile .
+    docker save mdworld/homeremote:latest -o mdworld_homeremote__latest.tar
+    ```
+1. Update the versions in package.json in client and server repo
+1. Build client and server to check build will succeed
+1. Tag client and server with the new version number: git tag -a v2.0.0 -m "publish version 2.0.0"
+1. Push client and server with tags: git push --follow-tags
+1. Run `./build.sh` in the `build-docker` dir
+1. Set up /someDir/repos/hr/build-docker/settings/ with .env and auth.json
+1. To run locally: run `docker run...` (see comment in Dockerfile)
+1. Export with `docker save...` (see comment in Dockerfile)
+1. Copy exported .tar to the server
+1. On the server, set up /someDir/hr/settings/ with .env and auth.json
+1. Run `docker run...` from /someDir/hr/run.sh (see comment in Dockerfile) *BUT WITHOUT -rm*
+
+TODO?
+
+* automate these steps with one script:
+    1. Update the versions in package.json in client and server repo
+    1. Build client and server to check build will succeed
+    1. Tag client and server with the new version number: git tag -a v2.0.0 -m "publish version 2.0.0"
+    1. Push client and server with tags: git push --follow-tags
+* unrelated: https://github.com/creack/docker-firefox/blob/master/Dockerfile -> https://docs.docker.com/engine/reference/commandline/build/#build-with-url
+* automate: when version changes, set a tag in git
+* https://docs.docker.com/engine/reference/commandline/build/#git-repositories
+    * e.g.: `docker build https://github.com/mdvanes/myrepo.git#mytag:myfolder`
+* in Docker? Multi stage build? https://medium.com/@basakabhijoy/dockerise-a-nestjs-app-2b7f42fc333f
+* how to add client dist to server dist?
 * when this runs in a Docker container, will it still be able to access other Docker containers?
     * difficult when doing "exec" from node, e.g. to do `docker ps -as --format='{{json .}}'` (see system guides for more commands)
     * Using Docker Engine API: curl --unix-socket /var/run/docker.sock http:/v1.24/containers/json?all=true
