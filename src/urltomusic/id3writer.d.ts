@@ -1,29 +1,29 @@
-declare module 'id3-writer' {
-  class FileType {}
+declare module "id3-writer" {
+    class FileType {}
 
-  class MetaType {}
+    class MetaType {}
 
-  class WriterType {
-    setFile(
-      file: FileType,
-    ): {
-      write: (meta: any, callback: any) => any;
+    class WriterType {
+        setFile(
+            file: FileType
+        ): {
+            write: (meta: any, callback: any) => any;
+        };
+    }
+
+    const Id3Writer: {
+        File: new (path: string) => FileType;
+        Meta: new ({
+            artist,
+            title,
+            album,
+        }: {
+            artist: string;
+            title: string;
+            album: string;
+        }) => MetaType;
+        Writer: new () => WriterType;
     };
-  }
 
-  const Id3Writer: {
-    File: new (path: string) => FileType;
-    Meta: new ({
-      artist,
-      title,
-      album,
-    }: {
-      artist: string;
-      title: string;
-      album: string;
-    }) => MetaType;
-    Writer: new () => WriterType;
-  };
-
-  export = Id3Writer;
+    export = Id3Writer;
 }
