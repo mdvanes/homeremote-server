@@ -81,7 +81,7 @@ Deployment Strategy (Docker)
 
 TODO?
 
-* automate these steps with one script:
+* automate these steps with one script (but opt-out of version bump/tagging when debugging?):
     1. Update the versions in package.json in client and server repo
     1. Build client and server to check build will succeed
     1. Tag client and server with the new version number: git tag -a v2.0.0 -m "publish version 2.0.0"
