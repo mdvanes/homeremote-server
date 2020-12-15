@@ -191,8 +191,8 @@ export class UrltomusicController {
             const rootPath = this.configService.get<string>(
                 "URL_TO_MUSIC_ROOTPATH"
             );
-            const uid = this.configService.get<number>("OWNERINFO_UID");
-            const gid = this.configService.get<number>("OWNERINFO_GID");
+            const uid = this.configService.get<string>("OWNERINFO_UID");
+            const gid = this.configService.get<string>("OWNERINFO_GID");
             if (!rootPath) {
                 throw new HttpException(
                     "rootPath not configured",
@@ -227,7 +227,7 @@ export class UrltomusicController {
             );
             this.logger.verbose(`Set metadata for ${fileName}`);
             chmodSync(result.path, "664");
-            chownSync(result.path, uid, gid);
+            chownSync(result.path, parseInt(uid, 10), parseInt(gid, 10));
             this.logger.verbose(`Set owner permissions for ${result.path}`);
             return result;
         } else {
