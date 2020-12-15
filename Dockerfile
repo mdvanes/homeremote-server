@@ -5,6 +5,7 @@
 # docker run --rm --name homeremote \
 #     --env-file $(pwd)/settings/.env \
 #     -v $(pwd)/settings/auth.json:/app/dist/auth.json \
+#     -v /mnt/disk3t/Media/Music/Various/Songs\ from/:/songsfrom \
 #     -p 3201:3200 \
 #     mdworld/homeremote:latest
 # Export this image: `docker save mdworld/homeremote:latest -o mdworld_homeremote__latest.tar`
@@ -59,7 +60,7 @@ FROM node:15.0.1-alpine
 WORKDIR /app
 COPY --from=build-env /build/ /app/
 # Install runtime dependencies
-RUN apk add --no-cache curl python
+RUN apk add --no-cache curl python ffmpeg py3-eyed3
 
 # https://docs.docker.com/storage/bind-mounts/#mount-into-a-non-empty-directory-on-the-container
 # start app

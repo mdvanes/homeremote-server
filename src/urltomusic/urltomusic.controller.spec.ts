@@ -11,6 +11,13 @@ jest.mock("youtube-dl", () => {
     };
 });
 
+jest.mock("fs", () => {
+    return {
+        chmodSync: jest.fn(),
+        chownSync: jest.fn(),
+    };
+});
+
 const getInfoSpy = jest
     .spyOn(youtubedl, "getInfo")
     .mockImplementation((url, callback) => {

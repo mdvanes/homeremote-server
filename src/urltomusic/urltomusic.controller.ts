@@ -11,6 +11,7 @@ import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import youtubedl from "youtube-dl";
 import { ConfigService } from "@nestjs/config";
 import id3 from "id3-writer";
+import { chmodSync, chownSync } from "fs";
 
 interface GetInfoBody {
     url: string;
@@ -140,7 +141,7 @@ const setMetadataPromise = (
 
             writer.setFile(file).write(meta, function (err: Error) {
                 if (err) {
-                    reject("set metadata failed: " + err);
+                    reject(new Error(`Set metadata failed: ${path} ${err}`));
                 } else {
                     resolve({ path, fileName });
                 }
@@ -190,9 +191,23 @@ export class UrltomusicController {
             const rootPath = this.configService.get<string>(
                 "URL_TO_MUSIC_ROOTPATH"
             );
+            const uid = this.configService.get<number>("OWNERINFO_UID");
+            const gid = this.configService.get<number>("OWNERINFO_GID");
             if (!rootPath) {
                 throw new HttpException(
                     "rootPath not configured",
+                    HttpStatus.NOT_ACCEPTABLE
+                );
+            }
+            if (!uid) {
+                throw new HttpException(
+                    "OWNERINFO_UID not configured",
+                    HttpStatus.NOT_ACCEPTABLE
+                );
+            }
+            if (!gid) {
+                throw new HttpException(
+                    "OWNERINFO_GID not configured",
                     HttpStatus.NOT_ACCEPTABLE
                 );
             }
@@ -211,6 +226,9 @@ export class UrltomusicController {
                 album
             );
             this.logger.verbose(`Set metadata for ${fileName}`);
+            chmodSync(result.path, "664");
+            chownSync(result.path, uid, gid);
+            this.logger.verbose(`Set owner permissions for ${result.path}`);
             return result;
         } else {
             // If Url not set, the error "not acceptable" is shown in the UI instead of "url is required"
