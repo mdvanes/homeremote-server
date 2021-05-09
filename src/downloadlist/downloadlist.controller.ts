@@ -1,14 +1,15 @@
-import { Controller, Get, Logger, UseGuards } from "@nestjs/common";
+import { Controller, Get, Logger, Param, ParseIntPipe, UseGuards } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Transmission } from "@ctrl/transmission";
-import { NormalizedTorrent } from "@ctrl/shared-torrent";
+import { NormalizedTorrent, TorrentState } from "@ctrl/shared-torrent";
 import prettyBytes from "pretty-bytes";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 
+// TODO share types between back-end and front-end, via homeremote-plugins?
 type DownloadStatus = "paused" | "Stopped" | "Downloading";
 
 interface DownloadItem {
-    id: string;
+    id: number;
     name: string;
     percentage: number;
     status: DownloadStatus;
@@ -19,10 +20,20 @@ type DownloadListResponse =
     | { status: "received"; downloads: DownloadItem[] }
     | { status: "error" };
 
+type DownloadToggleResponse =
+    | { status: "received"; message: string }
+    | { status: "error" };
+
+// TODO but maybe still show the state (as an anonymous string type) in the front-end?
+const foo: Record<TorrentState, "Downloading"> = {
+    downloading: "Downloading",
+};
+
 const mapToDownloadItem = (item: NormalizedTorrent): DownloadItem => ({
-    id: item.id.toString(),
+    id: typeof item.id === "number" ? item.id : 0, // TODO just throw an error when item.id is not a number.
     name: item.name,
-    status: item.state === "paused" ? "Stopped" : "Downloading", // TODO map (some) other states: used for play button, so downloading/uploading/error?
+
+    status: item.state === "paused" ? "Stopped" : "Downloading",
     size: prettyBytes(item.totalSize),
     percentage: item.progress * 100,
 });
@@ -35,14 +46,45 @@ export class DownloadlistController {
         this.logger = new Logger(DownloadlistController.name);
     }
 
-    @UseGuards(JwtAuthGuard)
-    @Get()
-    async getDownloadList(): Promise<DownloadListResponse> {
+    getClient(): Transmission {
         const client = new Transmission({
             baseUrl: this.configService.get<string>("DOWNLOAD_BASE_URL") || "",
             username: this.configService.get<string>("DOWNLOAD_USERNAME") || "",
             password: this.configService.get<string>("DOWNLOAD_PASSWORD") || "",
         });
+        return client;
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("pauseDownload/:id")
+    async pauseDownload(
+        @Param("id", new ParseIntPipe()) id: number
+    ): Promise<DownloadToggleResponse> {
+        this.logger.verbose(`GET to /api/pauseDownload: ${id}`);
+        const client = this.getClient();
+
+        try {
+            const res = await client.pauseTorrent(id);
+            return {
+                status: "received",
+                message: res.result,
+            };
+        } catch (err) {
+            this.logger.error(err);
+            return { status: "error" };
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get()
+    async getDownloadList(): Promise<DownloadListResponse> {
+        // const client = new Transmission({
+        //     baseUrl: this.configService.get<string>("DOWNLOAD_BASE_URL") || "",
+        //     username: this.configService.get<string>("DOWNLOAD_USERNAME") || "",
+        //     password: this.configService.get<string>("DOWNLOAD_PASSWORD") || "",
+        // });
+        this.logger.verbose("GET to /api/downloadlist");
+        const client = this.getClient();
 
         try {
             const res = await client.getAllData();
