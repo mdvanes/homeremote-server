@@ -1,18 +1,14 @@
-import {
-    Controller,
-    Get,
-    HttpException,
-    HttpStatus,
-    Logger,
-    UseGuards,
-} from "@nestjs/common";
+import { Controller, Get, Logger, UseGuards } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { Transmission } from "@ctrl/transmission";
+import { NormalizedTorrent } from "@ctrl/shared-torrent";
+import prettyBytes from "pretty-bytes";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 
-type DownloadStatus = "Stopped" | "Downloading";
+type DownloadStatus = "paused" | "Stopped" | "Downloading";
 
 interface DownloadItem {
-    id: number;
+    id: string;
     name: string;
     percentage: number;
     status: DownloadStatus;
@@ -22,6 +18,14 @@ interface DownloadItem {
 type DownloadListResponse =
     | { status: "received"; downloads: DownloadItem[] }
     | { status: "error" };
+
+const mapToDownloadItem = (item: NormalizedTorrent): DownloadItem => ({
+    id: item.id.toString(),
+    name: item.name,
+    status: item.state === "paused" ? "Stopped" : "Downloading", // TODO map (some) other states: used for play button, so downloading/uploading/error?
+    size: prettyBytes(item.totalSize),
+    percentage: item.progress * 100,
+});
 
 @Controller("api/downloadlist")
 export class DownloadlistController {
@@ -34,31 +38,19 @@ export class DownloadlistController {
     @UseGuards(JwtAuthGuard)
     @Get()
     async getDownloadList(): Promise<DownloadListResponse> {
-        // const statusCmd = this.configService.get<string>("STATUS_CMD") || "";
-        // const statusField1 =
-        //     this.configService.get<string>("STATUS_FIELD1") || "";
-        // const statusField2 =
-        //     this.configService.get<string>("STATUS_FIELD2") || "";
+        const client = new Transmission({
+            baseUrl: this.configService.get<string>("DOWNLOAD_BASE_URL") || "",
+            username: this.configService.get<string>("DOWNLOAD_USERNAME") || "",
+            password: this.configService.get<string>("DOWNLOAD_PASSWORD") || "",
+        });
+
         try {
-            // const json = await execToJson(statusCmd);
+            const res = await client.getAllData();
+            const downloads = res.torrents.map<DownloadItem>(mapToDownloadItem);
+
             return {
                 status: "received",
-                downloads: [
-                    {
-                        id: 1,
-                        name: "Some Name",
-                        percentage: 10,
-                        status: "Downloading",
-                        size: "100 kB",
-                    },
-                    {
-                        id: 2,
-                        name: "File 2",
-                        percentage: 100,
-                        status: "Stopped",
-                        size: "1.2TB",
-                    },
-                ],
+                downloads,
             };
         } catch (err) {
             this.logger.error(err);
