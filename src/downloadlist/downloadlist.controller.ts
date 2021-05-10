@@ -1,20 +1,17 @@
-import { Controller, Get, Logger, Param, ParseIntPipe, UseGuards } from "@nestjs/common";
+import {
+    Controller,
+    Get,
+    Logger,
+    Param,
+    ParseIntPipe,
+    UseGuards,
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Transmission } from "@ctrl/transmission";
 import { NormalizedTorrent, TorrentState } from "@ctrl/shared-torrent";
 import prettyBytes from "pretty-bytes";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-
-// TODO share types between back-end and front-end, via homeremote-plugins?
-type DownloadStatus = "paused" | "Stopped" | "Downloading";
-
-interface DownloadItem {
-    id: number;
-    name: string;
-    percentage: number;
-    status: DownloadStatus;
-    size: string;
-}
+import { DownloadItem } from "../api-types/downloadlist.types";
 
 type DownloadListResponse =
     | { status: "received"; downloads: DownloadItem[] }
@@ -32,10 +29,12 @@ const foo: Record<TorrentState, "Downloading"> = {
 const mapToDownloadItem = (item: NormalizedTorrent): DownloadItem => ({
     id: typeof item.id === "number" ? item.id : 0, // TODO just throw an error when item.id is not a number.
     name: item.name,
-
     status: item.state === "paused" ? "Stopped" : "Downloading",
     size: prettyBytes(item.totalSize),
     percentage: item.progress * 100,
+    downloadSpeed: item.downloadSpeed,
+    uploadSpeed: item.uploadSpeed,
+    eta: item.eta,
 });
 
 @Controller("api/downloadlist")
