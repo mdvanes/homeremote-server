@@ -75,6 +75,26 @@ export class DownloadlistController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Get("resumeDownload/:id")
+    async resumeDownload(
+        @Param("id", new ParseIntPipe()) id: number
+    ): Promise<DownloadToggleResponse> {
+        this.logger.verbose(`GET to /api/resumeDownload: ${id}`);
+        const client = this.getClient();
+
+        try {
+            const res = await client.resumeTorrent(id);
+            return {
+                status: "received",
+                message: res.result,
+            };
+        } catch (err) {
+            this.logger.error(err);
+            return { status: "error" };
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Get()
     async getDownloadList(): Promise<DownloadListResponse> {
         // const client = new Transmission({
