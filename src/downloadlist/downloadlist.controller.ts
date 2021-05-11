@@ -10,8 +10,12 @@ import { ConfigService } from "@nestjs/config";
 import { Transmission } from "@ctrl/transmission";
 import { NormalizedTorrent, TorrentState } from "@ctrl/shared-torrent";
 import prettyBytes from "pretty-bytes";
+import prettyMs from "pretty-ms";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { DownloadItem } from "../api-types/downloadlist.types";
+import {
+    DownloadItem,
+    SimpleDownloadState,
+} from "../api-types/downloadlist.types";
 
 type DownloadListResponse =
     | { status: "received"; downloads: DownloadItem[] }
@@ -21,20 +25,26 @@ type DownloadToggleResponse =
     | { status: "received"; message: string }
     | { status: "error" };
 
-// TODO but maybe still show the state (as an anonymous string type) in the front-end?
-const foo: Record<TorrentState, "Downloading"> = {
-    downloading: "Downloading",
+const stateToSimpleState: Record<TorrentState, SimpleDownloadState> = {
+    downloading: "downloading",
+    seeding: "downloading",
+    queued: "downloading",
+    checking: "downloading",
+    paused: "paused",
+    error: "invalid",
+    unknown: "invalid",
 };
 
 const mapToDownloadItem = (item: NormalizedTorrent): DownloadItem => ({
     id: typeof item.id === "number" ? item.id : 0, // TODO just throw an error when item.id is not a number.
     name: item.name,
-    status: item.state === "paused" ? "Stopped" : "Downloading",
+    state: item.state,
+    simpleState: stateToSimpleState[item.state],
     size: prettyBytes(item.totalSize),
     percentage: item.progress * 100,
-    downloadSpeed: item.downloadSpeed,
-    uploadSpeed: item.uploadSpeed,
-    eta: item.eta,
+    downloadSpeed: prettyBytes(item.downloadSpeed),
+    uploadSpeed: prettyBytes(item.uploadSpeed),
+    eta: item.eta > 0 ? prettyMs(item.eta, { compact: true }) : "",
 });
 
 @Controller("api/downloadlist")
@@ -97,11 +107,6 @@ export class DownloadlistController {
     @UseGuards(JwtAuthGuard)
     @Get()
     async getDownloadList(): Promise<DownloadListResponse> {
-        // const client = new Transmission({
-        //     baseUrl: this.configService.get<string>("DOWNLOAD_BASE_URL") || "",
-        //     username: this.configService.get<string>("DOWNLOAD_USERNAME") || "",
-        //     password: this.configService.get<string>("DOWNLOAD_PASSWORD") || "",
-        // });
         this.logger.verbose("GET to /api/downloadlist");
         const client = this.getClient();
 
