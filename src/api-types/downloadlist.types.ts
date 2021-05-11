@@ -1,15 +1,16 @@
 // This file is copied from homeremote-server/src/api-types
+// Copying this file would not be needed when an Nx monorepo is used to combine front-end and back-end
 
-// TODO share types between back-end and front-end, via homeremote-plugins?
-export type DownloadStatus = "paused" | "Stopped" | "Downloading";
+export type SimpleDownloadState = "paused" | "downloading" | "invalid";
 
 export interface DownloadItem {
     id: number;
     name: string;
     percentage: number;
-    status: DownloadStatus;
+    state: string;
+    simpleState: SimpleDownloadState;
     size: string;
-    downloadSpeed: number;
-    uploadSpeed: number;
-    eta: number;
+    downloadSpeed: string;
+    uploadSpeed: string;
+    eta: string;
 }
