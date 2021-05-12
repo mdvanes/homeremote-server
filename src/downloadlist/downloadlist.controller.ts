@@ -41,10 +41,10 @@ const mapToDownloadItem = (item: NormalizedTorrent): DownloadItem => ({
     state: item.state,
     simpleState: stateToSimpleState[item.state],
     size: prettyBytes(item.totalSize),
-    percentage: item.progress * 100,
+    percentage: Math.round(item.progress * 100),
     downloadSpeed: prettyBytes(item.downloadSpeed),
     uploadSpeed: prettyBytes(item.uploadSpeed),
-    eta: item.eta > 0 ? prettyMs(item.eta, { compact: true }) : "",
+    eta: item.eta > 0 ? prettyMs(item.eta * 1000, { compact: true }) : "",
 });
 
 @Controller("api/downloadlist")
