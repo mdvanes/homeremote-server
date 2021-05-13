@@ -319,6 +319,27 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@ctrl/shared-torrent@^3.0.4":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@ctrl/shared-torrent/-/shared-torrent-3.0.4.tgz#2355bbf06d4101e37da5a0673254a5319c8fcce2"
+  integrity sha512-5/Xk901lD15Ys4rNHU3zQL6iGkpXFBA2H7XGbrg8Mjh9bR/9LIPsLaPjqj8BQmA/c1319CVRzlT6WOzdb0Ehog==
+  dependencies:
+    got "^11.8.1"
+
+"@ctrl/transmission@^2.2.2":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@ctrl/transmission/-/transmission-2.2.2.tgz#0f38eb71661db0f492b283cde4547805b40bc8ae"
+  integrity sha512-5FtrG6V9MLgNxKp0PtBHaAFNvQTNyWABlHc/UeY3tYB0DyRPr723OObzUn4HeYRz7lq7xLpRtEsN3g1+bruMug==
+  dependencies:
+    "@ctrl/shared-torrent" "^3.0.4"
+    "@ctrl/url-join" "^1.0.3"
+    got "^11.8.1"
+
+"@ctrl/url-join@^1.0.3":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@ctrl/url-join/-/url-join-1.0.4.tgz#c8d17db5489986fd7ca0cd9d796ace47cef1aa74"
+  integrity sha512-xfcJEJki0r4Ms0l3852KNnhaL620onOAVM1sn+smd3SyY/kt5ba6a8DNRAtn/G6/waU9uEQVSC6ygekRVdH+Xg==
+
 "@eslint/eslintrc@^0.1.3":
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-0.1.3.tgz#7d1a2b2358552cc04834c0979bd4275362e37085"
@@ -3744,6 +3765,23 @@ got@^11.8.0:
     p-cancelable "^2.0.0"
     responselike "^2.0.0"
 
+got@^11.8.1:
+  version "11.8.2"
+  resolved "https://registry.yarnpkg.com/got/-/got-11.8.2.tgz#7abb3959ea28c31f3576f1576c1effce23f33599"
+  integrity sha512-D0QywKgIe30ODs+fm8wMZiAcZjypcCodPNuMz5H9Mny7RJ+IjJ10BdmGW7OM7fHXP+O7r6ZwapQ/YQmMSvB0UQ==
+  dependencies:
+    "@sindresorhus/is" "^4.0.0"
+    "@szmarczak/http-timer" "^4.0.5"
+    "@types/cacheable-request" "^6.0.1"
+    "@types/responselike" "^1.0.0"
+    cacheable-lookup "^5.0.3"
+    cacheable-request "^7.0.1"
+    decompress-response "^6.0.0"
+    http2-wrapper "^1.0.0-beta.5.2"
+    lowercase-keys "^2.0.0"
+    p-cancelable "^2.0.0"
+    responselike "^2.0.0"
+
 graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.3.tgz#4a12ff1b60376ef09862c2093edd908328be8423"
@@ -6009,6 +6047,11 @@ parse-json@^5.0.0:
     json-parse-even-better-errors "^2.3.0"
     lines-and-columns "^1.1.6"
 
+parse-ms@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/parse-ms/-/parse-ms-2.1.0.tgz#348565a753d4391fa524029956b172cb7753097d"
+  integrity sha512-kHt7kzLoS9VBZfUsiKjv43mr91ea+U05EyKkEtqp7vNbHxmaVuEqN7XxeEVnGrMtYOAxGrDElSi96K7EgO1zCA==
+
 parse5@5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/parse5/-/parse5-5.1.1.tgz#f68e4e5ba1852ac2cadc00f4555fff6c2abb6178"
@@ -6210,6 +6253,11 @@ prettier@^2.1.2:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.1.2.tgz#3050700dae2e4c8b67c4c3f666cdb8af405e1ce5"
   integrity sha512-16c7K+x4qVlJg9rEbXl7HEGmQyZlG4R9AgP+oHKRMsMsuk8s+ATStlf1NpDqyBI1HpVyfjLOeMhH2LvuNvV5Vg==
 
+pretty-bytes@^5.6.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/pretty-bytes/-/pretty-bytes-5.6.0.tgz#356256f643804773c82f64723fe78c92c62beaeb"
+  integrity sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==
+
 pretty-format@^25.2.1, pretty-format@^25.5.0:
   version "25.5.0"
   resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-25.5.0.tgz#7873c1d774f682c34b8d48b6743a2bf2ac55791a"
@@ -6229,6 +6277,13 @@ pretty-format@^26.4.2:
     ansi-regex "^5.0.0"
     ansi-styles "^4.0.0"
     react-is "^16.12.0"
+
+pretty-ms@^7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/pretty-ms/-/pretty-ms-7.0.1.tgz#7d903eaab281f7d8e03c66f867e239dc32fb73e8"
+  integrity sha512-973driJZvxiGOQ5ONsFhOF/DtzPMOMtgC11kCpUrPGMTgqp2q/1gwzCquocrN33is0VZ5GFHXZYMM9l6h67v2Q==
+  dependencies:
+    parse-ms "^2.1.0"
 
 process-nextick-args@~2.0.0:
   version "2.0.1"

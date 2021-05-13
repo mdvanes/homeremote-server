@@ -7,13 +7,14 @@ import {
     UnauthorizedException,
     UseGuards,
 } from "@nestjs/common";
-// import bcrypt from 'bcrypt';
+// import bcrypt from "bcrypt";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
 import { User, UsersService } from "../users/users.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 
 // const saltRounds = 10;
-// const generateHash = (password: string): Promise<string> => bcrypt.hash(password, saltRounds);
+// const generateHash = (password: string): Promise<string> =>
+//     bcrypt.hash(password, saltRounds);
 
 @Controller("api/profile")
 export class ProfileController {
@@ -39,13 +40,13 @@ export class ProfileController {
 
     // Use to create a hash, because there is no "create new user" flow implemented
     // Should not have guard
-    // @Get('gethash')
+    // @Get("gethash")
     // async getHash(@Query() query: { password: string }): Promise<string> {
-    //   try {
-    //     return generateHash(query.password);
-    //   } catch (err) {
-    //     this.logger.error(`Can't hash password ${err}`);
-    //     return "";
-    //   }
+    //     try {
+    //         return generateHash(query.password);
+    //     } catch (err) {
+    //         this.logger.error(`Can't hash password ${err}`);
+    //         return "";
+    //     }
     // }
 }
