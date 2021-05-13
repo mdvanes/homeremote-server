@@ -103,6 +103,41 @@ describe("Downloadlist Controller", () => {
             });
         });
 
+        it("maps non-number id to 0", async () => {
+            const mockInvalidIdResponse: Partial<NormalizedTorrent>[] = [
+                {
+                    id: "string_is_possible",
+                    name: "some_name",
+                    state: TorrentState.paused,
+                    totalSize: 100000,
+                    progress: 0.5,
+                    downloadSpeed: 100,
+                    uploadSpeed: 100,
+                    eta: 1234567,
+                },
+            ];
+            mockGetAllData.mockResolvedValueOnce({
+                torrents: mockInvalidIdResponse,
+            });
+            const result = await controller.getDownloadList();
+            expect(result).toEqual({
+                status: "received",
+                downloads: [
+                    {
+                        downloadSpeed: "100 B",
+                        eta: "14d",
+                        id: 0,
+                        name: "some_name",
+                        percentage: 50,
+                        simpleState: "paused",
+                        size: "100 kB",
+                        state: "paused",
+                        uploadSpeed: "100 B",
+                    },
+                ],
+            });
+        });
+
         it("can return an error on failure", async () => {
             mockGetAllData.mockRejectedValue("mock getAllData failed");
 
