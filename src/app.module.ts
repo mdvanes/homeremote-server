@@ -15,6 +15,7 @@ import { NowplayingController } from "./nowplaying/nowplaying.controller";
 import { StatusController } from "./status/status.controller";
 import { LogoutController } from "./logout/logout.controller";
 import { UrltomusicController } from "./urltomusic/urltomusic.controller";
+import { DownloadlistController } from "./downloadlist/downloadlist.controller";
 
 // TODO replace package.json copy in in "build" by assets setting in nest-cli.json, see https://docs.nestjs.com/cli/monorepo#assets
 // Nest CLI does not automatically move your "assets" (non-TS files) to the dist folder during the build process. To make sure that your YAML files are being moved as part of the compilation, add compilerOptions#assets to the nest-cli.json configuration file ("assets": ["**/*.yml"]). Read more here.
@@ -47,6 +48,7 @@ import { UrltomusicController } from "./urltomusic/urltomusic.controller";
         StatusController,
         LogoutController,
         UrltomusicController,
+        DownloadlistController,
     ],
     providers: [AppService],
 })
