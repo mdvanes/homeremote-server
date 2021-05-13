@@ -77,7 +77,12 @@ Deployment Strategy (Docker)
 1. Export with `docker save...` (see comment in Dockerfile)
 1. Copy exported .tar to the server
 1. On the server, set up /someDir/hr/settings/ with .env and auth.json
-1. Run `docker run...` from /someDir/hr/run.sh (see comment in Dockerfile) *BUT WITHOUT -rm*
+1. docker stop homeremote
+1. docker rm homeremote
+1. docker rmi mdworld/homeremote:latest
+1. Import the new image, in the correct dir: docker load -i mdworld_homeremote__latest.tar
+1. Run with `docker run...` as explained in "system guides"
+1. If not working: restart tab, logout/login, use the navigation menu, clear service worker.
 
 TODO?
 
