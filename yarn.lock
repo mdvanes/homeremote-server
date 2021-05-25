@@ -593,6 +593,14 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
+"@mdworld/homeremote-dockerlist-server@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@mdworld/homeremote-dockerlist-server/-/homeremote-dockerlist-server-1.7.0.tgz#6b7662900c848a01e8e2f8f9bc460766eaf69c0c"
+  integrity sha512-/uEpdnmr3Mr9SeTkgiXwTsGUvfMGVdo5jQY/EET3y3geX1pD3Lx56kOTiVXUM7jDxCZWsCoYW60KzpMkshd4eA==
+  dependencies:
+    express "^4.17.1"
+    got "^11.8.0"
+
 "@mdworld/homeremote-stream-player-server@^1.6.2":
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/@mdworld/homeremote-stream-player-server/-/homeremote-stream-player-server-1.6.2.tgz#c86753de8e778b97fb9c0c7ec76fd3e923fef348"

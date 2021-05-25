@@ -69,7 +69,7 @@ export class DownloadlistController {
     async pauseDownload(
         @Param("id", new ParseIntPipe()) id: number
     ): Promise<DownloadToggleResponse> {
-        this.logger.verbose(`GET to /api/pauseDownload: ${id}`);
+        this.logger.verbose(`GET to /api/downloadlist/pauseDownload: ${id}`);
         const client = this.getClient();
 
         try {
@@ -89,7 +89,7 @@ export class DownloadlistController {
     async resumeDownload(
         @Param("id", new ParseIntPipe()) id: number
     ): Promise<DownloadToggleResponse> {
-        this.logger.verbose(`GET to /api/resumeDownload: ${id}`);
+        this.logger.verbose(`GET to /api/downloadlist/resumeDownload: ${id}`);
         const client = this.getClient();
 
         try {

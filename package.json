@@ -29,6 +29,7 @@
   "dependencies": {
     "@ctrl/transmission": "^2.2.2",
     "@hapi/joi": "^17.1.1",
+    "@mdworld/homeremote-dockerlist-server": "^1.7.0",
     "@mdworld/homeremote-stream-player-server": "^1.6.2",
     "@nestjs/common": "^6.10.14",
     "@nestjs/config": "^0.6.1",
