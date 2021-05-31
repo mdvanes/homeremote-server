@@ -1,5 +1,4 @@
 import { Controller, Logger, UseGuards, Get, Param } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import {
     DockerListResponse,
@@ -12,7 +11,7 @@ import {
 export class DockerlistController {
     private readonly logger: Logger;
 
-    constructor(private configService: ConfigService) {
+    constructor() {
         this.logger = new Logger(DockerlistController.name);
     }
 

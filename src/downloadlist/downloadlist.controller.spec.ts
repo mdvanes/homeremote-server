@@ -69,7 +69,7 @@ describe("Downloadlist Controller", () => {
     describe("getDownloadList GET", () => {
         it("returns a mapped list of current downloads", async () => {
             const result = await controller.getDownloadList();
-            expect(MockTransmission).toHaveBeenCalledWith({
+            expect(MockTransmission).toBeCalledWith({
                 baseUrl: "http://some_url",
                 password: "some_password",
                 username: "some_username",
