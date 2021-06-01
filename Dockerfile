@@ -6,6 +6,7 @@
 #     --env-file $(pwd)/settings/.env \
 #     -v $(pwd)/settings/auth.json:/app/dist/auth.json \
 #     -v /mnt/disk3t/Media/Music/Various/Songs\ from/:/songsfrom \
+#     -v /var/run/docker.sock:/var/run/docker.sock \
 #     -p 3201:3200 \
 #     mdworld/homeremote:latest
 # Export this image: `docker save mdworld/homeremote:latest -o mdworld_homeremote__latest.tar`
