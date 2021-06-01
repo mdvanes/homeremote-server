@@ -71,17 +71,39 @@ Deployment Strategy (Docker)
 1. Build client and server to check build will succeed
 1. Tag client and server with the new version number: git tag -a v2.0.0 -m "publish version 2.0.0"
 1. Push client and server with tags: git push --follow-tags
-1. Run `./build.sh` in the `build-docker` dir
+1. Run `./build.sh` in the `build-docker` dir (this also exports to .tar)
 1. Set up /someDir/repos/hr/build-docker/settings/ with .env and auth.json
 1. To run locally: run `docker run...` (see comment in Dockerfile)
-1. Export with `docker save...` (see comment in Dockerfile)
 1. Copy exported .tar to the server
 1. On the server, set up /someDir/hr/settings/ with .env and auth.json
-1. docker stop homeremote
-1. docker rm homeremote
-1. docker rmi mdworld/homeremote:latest
-1. Import the new image, in the correct dir: docker load -i mdworld_homeremote__latest.tar
-1. Run with `docker run...` as explained in "system guides"
+1. Create/check `/someDir/hr/updateHomeremote.sh` and `chmod +x` it:
+    ```bash
+    #!/bin/bash
+    set -euo pipefail
+    IFS=$'\n\t'
+
+    TAR_PATH=/REPLACE_THIS_PATH
+
+    docker stop homeremote
+    docker rm homeremote
+    docker rmi mdworld/homeremote:latest
+    ls $TAR_PATH -lh | grep mdworld_homeremote__latest
+    docker load -i $TAR_PATH/mdworld_homeremote__latest.tar
+
+    # Sync this with documentation in "system guides", differs in path after $(pwd) because this file is in hr dir
+    docker run -d --name homeremote \
+        --env-file $(pwd)/settings/.env \
+        -v $(pwd)/settings/auth.json:/app/dist/auth.json \
+        -v /mnt/disk3t/Media/Music/Various/Songs\ from/:/songsfrom \
+        -v /var/run/docker.sock:/var/run/docker.sock \
+        -p 3000:3200 \
+        --restart unless-stopped \
+        mdworld/homeremote:latest
+
+    docker ps | grep homeremote
+    ```
+1. Run `./updateHomeremote.sh`
+1. Smoketest the application in the browser
 1. If not working: restart tab, logout/login, use the navigation menu, clear service worker.
 
 TODO?
