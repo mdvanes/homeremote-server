@@ -12,6 +12,7 @@
     "start": "NODE_ENV=DEVELOPMENT nest start",
     "start:dev-nginx": "docker run --rm --name homeremote-dev-nginx --add-host localnode:$(ifconfig eth0 | grep inet | grep -v inet6 | awk '{print $2}') -p 3002:80 -v $PWD/nginx.conf:/etc/nginx/nginx.conf:ro -d nginx",
     "start:dev": "NODE_ENV=DEVELOPMENT nest build --watch --webpack --webpackPath webpack-hmr.config.js",
+    "start:dev-temp": "NODE_ENV=DEVELOPMENT nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/src/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
