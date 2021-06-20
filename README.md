@@ -51,6 +51,8 @@ Deployment Strategy (Docker)
 1. Make sure there is a file `repos/hr/build-docker/build.sh`:
     ```bash
     #!/bin/bash
+    set -euo pipefail
+    IFS=$'\n\t'
 
     source ~/.nvm/nvm.sh
     nvm use 15
@@ -69,12 +71,12 @@ Deployment Strategy (Docker)
     ```
 1. Update the versions in package.json in client and server repo
 1. Build client and server to check build will succeed
-1. Tag client and server with the new version number: git tag -a v2.0.0 -m "publish version 2.0.0"
-1. Push client and server with tags: git push --follow-tags
+1. Tag client and server with the new version number: `git tag -a v2.0.0 -m "publish version 2.0.0"`
+1. Push client and server with tags: `git push --follow-tags`
 1. Run `./build.sh` in the `build-docker` dir (this also exports to .tar)
 1. Set up /someDir/repos/hr/build-docker/settings/ with .env and auth.json
-1. To run locally: run `docker run...` (see comment in Dockerfile)
-1. Copy exported .tar to the server
+1. To run locally: create and run a file `./run.sh` that runs a configured `docker run...` (see comment in Dockerfile)
+1. Create and run a file `./copyToServer.sh` to copy exported .tar to the server
 1. On the server, set up /someDir/hr/settings/ with .env and auth.json
 1. Create/check `/someDir/hr/updateHomeremote.sh` and `chmod +x` it:
     ```bash
