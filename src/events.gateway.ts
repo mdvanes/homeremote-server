@@ -10,7 +10,7 @@ import { map } from "rxjs/operators";
 import { Server } from "ws";
 
 // @WebSocketGateway(8080)
-@WebSocketGateway(8080, { path: "/wsv1" })
+@WebSocketGateway(8080, { path: "/hr-events" })
 export class EventsGateway {
     @WebSocketServer()
     // @ts-ignore
