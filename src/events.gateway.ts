@@ -13,8 +13,38 @@ import { Server } from "ws";
 @WebSocketGateway(8080, { path: "/hr-events" })
 export class EventsGateway {
     @WebSocketServer()
-    // @ts-ignore
-    server: Server;
+    server: Server | null = null;
+    clients: WebSocket[] = [];
+
+    constructor() {
+        // private readonly jwtService: JwtService // TODO this import fails because with "not imported in module", but is is imported in app.module via authmodule // private app: INestApplicationContext // private readonly usersService: UsersService,
+        // this.logger = new Logger(AuthService.name);
+        // this.jwtService = this.app.get(JwtService);
+    }
+
+    // @Subscribe
+    // in gateway
+    async handleConnection(socket: WebSocket): Promise<void> {
+        // const user: User = await this.jwtService.verify(
+        //     socket.handshake.query.token
+        //     // true
+        // );
+
+        // this.connectedUsers = [...this.connectedUsers, String(user._id)];
+        this.clients = [...this.clients, socket];
+
+        if (this.server) {
+            // Send list of connected users
+            // this.server.emit("users", socket, "this.connectedUsers"); does not work?
+            console.log("handleConnection"); // , user.name);
+            this.clients.forEach((client) => {
+                // TODO this "client id" list is not very stable, use uuids and clean up on disconnect
+                client.send(
+                    JSON.stringify(this.clients.map((c, index) => index))
+                ); // works!
+            });
+        }
+    }
 
     @SubscribeMessage("events")
     onEvent(client: any, data: any): Observable<WsResponse<number>> {
