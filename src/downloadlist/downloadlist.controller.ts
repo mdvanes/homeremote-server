@@ -1,6 +1,8 @@
 import {
     Controller,
     Get,
+    HttpException,
+    HttpStatus,
     Logger,
     Param,
     ParseIntPipe,
@@ -133,8 +135,10 @@ export class DownloadlistController {
                 downloads,
             };
         } catch (err) {
-            this.logger.error(err);
-            return { status: "error" };
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
 }
