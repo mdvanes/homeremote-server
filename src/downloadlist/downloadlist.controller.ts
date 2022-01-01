@@ -47,6 +47,13 @@ const mapToDownloadItem = (item: NormalizedTorrent): DownloadItem => ({
     eta: item.eta > 0 ? prettyMs(item.eta * 1000, { compact: true }) : "",
 });
 
+const wait = (ms: number) =>
+    new Promise<void>((resolve) => {
+        setTimeout(() => {
+            resolve();
+        }, ms);
+    });
+
 @Controller("api/downloadlist")
 export class DownloadlistController {
     private readonly logger: Logger;
@@ -74,6 +81,8 @@ export class DownloadlistController {
 
         try {
             const res = await client.pauseTorrent(id);
+            // Response is so fast that getDownloadList will not be updated yet (see resumeDownload function)
+            await wait(500);
             return {
                 status: "received",
                 message: res.result,
@@ -94,6 +103,11 @@ export class DownloadlistController {
 
         try {
             const res = await client.resumeTorrent(id);
+            // A delay is added because the call to downloadlist is done so fast after resumeDownload, that the server did not yet
+            // finish changing the status to resumed.
+            // Why is this not an issue in the old implementation (with RTK but not RTKQ)? There is over 1s between the resumedownload and the get downloadlist calls!
+            // There used to be a 1s delay in the client for that.
+            await wait(500);
             return {
                 status: "received",
                 message: res.result,
