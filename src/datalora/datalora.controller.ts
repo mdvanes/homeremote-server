@@ -57,6 +57,9 @@ const getQueryType = (query: { type: QueryType }): QueryType => {
     return isValid ? t : "24h";
 };
 
+const getLast = <T>(rows: T[]): T[] =>
+    rows.length > 0 ? rows.slice(rows.length - 1) : [];
+
 @Controller("api/datalora")
 export class DataloraController {
     private readonly logger: Logger;
@@ -78,11 +81,22 @@ export class DataloraController {
 
         try {
             const queryType: QueryType = getQueryType(query);
+            // TODO use subscription and web socket instead of collectRows___
             const rows = await queryApi.collectRows(
                 createFluxQuery(queryType),
                 rowMapper
             );
-            const coords = rows.filter(isNotNull);
+            const cleanRows = rows.filter(isNotNull);
+            const backupRow =
+                cleanRows.length === 0
+                    ? getLast(
+                          await queryApi.collectRows(
+                              createFluxQuery("all"),
+                              rowMapper
+                          )
+                      )
+                    : null;
+            const coords = backupRow || cleanRows;
 
             return {
                 data: coords,
