@@ -18,6 +18,7 @@ import { UrltomusicController } from "./urltomusic/urltomusic.controller";
 import { DownloadlistController } from "./downloadlist/downloadlist.controller";
 import { DockerlistController } from "./dockerlist/dockerlist.controller";
 import { EventsGateway } from "./events.gateway";
+import { DataloraController } from "./datalora/datalora.controller";
 
 // TODO replace package.json copy in in "build" by assets setting in nest-cli.json, see https://docs.nestjs.com/cli/monorepo#assets
 // Nest CLI does not automatically move your "assets" (non-TS files) to the dist folder during the build process. To make sure that your YAML files are being moved as part of the compilation, add compilerOptions#assets to the nest-cli.json configuration file ("assets": ["**/*.yml"]). Read more here.
@@ -39,6 +40,10 @@ import { EventsGateway } from "./events.gateway";
                 SOME_VAR: Joi.string().required,
             }),
         }),
+        // JwtModule.register({
+        //     secret: jwtConstants.secret,
+        //     signOptions: { expiresIn: `${EXPIRES_IN_S * 1000}` }, // in ms, see https://github.com/auth0/node-jsonwebtoken#usage
+        // }),
     ],
     // controllers: [AppController,
     controllers: [
@@ -52,6 +57,7 @@ import { EventsGateway } from "./events.gateway";
         UrltomusicController,
         DownloadlistController,
         DockerlistController,
+        DataloraController,
     ],
     providers: [AppService, EventsGateway],
 })
