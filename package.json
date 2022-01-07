@@ -30,6 +30,7 @@
   "dependencies": {
     "@ctrl/transmission": "^2.2.2",
     "@hapi/joi": "^17.1.1",
+    "@influxdata/influxdb-client": "^1.21.0",
     "@mdworld/homeremote-dockerlist-server": "^1.7.0",
     "@mdworld/homeremote-stream-player-server": "^1.6.2",
     "@nestjs/common": "^7.6.18",
