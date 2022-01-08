@@ -141,13 +141,15 @@ describe("Downloadlist Controller", () => {
         it("can return an error on failure", async () => {
             mockGetAllData.mockRejectedValue("mock getAllData failed");
 
-            const result = await controller.getDownloadList();
+            await expect(controller.getDownloadList()).rejects.toThrow(
+                "failed to receive downstream data"
+            );
+
             expect(MockTransmission).toHaveBeenCalledWith({
                 baseUrl: "http://some_url",
                 password: "some_password",
                 username: "some_username",
             });
-            expect(result).toEqual({ status: "error" });
         });
     });
 
