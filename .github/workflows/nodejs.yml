@@ -1,23 +1,35 @@
-name: Node.js CI
+name: Validate and Build
 
 on: [push]
 
+# on:
+#   push:
+#     paths:
+#       - 'api/**'
+#   pull_request:
+#     paths:
+#       - 'api/**'
+
 jobs:
-  build:
+    build:
+        runs-on: ubuntu-latest
 
-    runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node-version: [16.x]
 
-    strategy:
-      matrix:
-        node-version: [15.x] # was [12.x]
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: yarn install --frozen-lockfile
-    - run: cp auth.json.example auth.json && yarn lint && yarn test:cov && yarn build
-      env:
-        CI: true
+        steps:
+            - uses: actions/checkout@v2
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v1
+              with:
+                  node-version: ${{ matrix.node-version }}
+            - run: yarn install --frozen-lockfile
+            - run: cp auth.json.example auth.json && yarn lint && yarn test:cov && yarn build
+              env:
+                  CI: true
+            # - name: Build docker image
+            #   if: ${{ github.ref == 'refs/heads/main' }}
+            #   run: |
+            #     docker build -t mdworld/homeremote:latest -f homeremote-server/Dockerfile .
+            #     docker save mdworld/homeremote:latest -o mdworld_homeremote__latest.tar
