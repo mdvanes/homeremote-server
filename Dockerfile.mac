@@ -1,0 +1,28 @@
+# https://medium.com/bb-tutorials-and-thoughts/react-local-development-with-docker-compose-5a247710f997
+
+# USAGE: copy docker-compose.mac.yml and Dockerfile.mac to parent of homeremote-server and run docker-compose -f docker-compose.mac.yml up --build
+# cp docker-compose.mac.yml ../ && cp Dockerfile.mac ../ && cd .. && docker-compose -f docker-compose.mac.yml up --build
+
+FROM node:16-bullseye
+
+WORKDIR /usr/src/app/server
+WORKDIR /usr/src/app/client
+WORKDIR /usr/src/app
+
+RUN yarn global add concurrently
+
+COPY ./homeremote-server/package*.json ./server
+COPY ./homeremote-server/yarn.lock ./server
+COPY ./homeremote/package*.json ./client
+COPY ./homeremote/yarn.lock ./client
+# COPY ./homeremote/bsconfig.json ./client
+
+RUN yarn --cwd ./server install
+# no need for client postinstall (actually it is included in 'yarn start dev')
+RUN yarn --cwd ./client install --ignore-scripts
+
+EXPOSE 3001
+
+# TODO add nginx reverse proxy
+# concurrently "yarn --cwd ./server start:dev-temp" "yarn --cwd ./client start:dev"
+CMD ["concurrently", "\"yarn --cwd ./server start:dev-temp\"", "\"yarn --cwd ./client start:dev\""]
