@@ -90,10 +90,12 @@ export class DataloraController {
             const backupRow =
                 cleanRows.length === 0
                     ? getLast(
-                          await queryApi.collectRows(
-                              createFluxQuery("all"),
-                              rowMapper
-                          )
+                          (
+                              await queryApi.collectRows(
+                                  createFluxQuery("all"),
+                                  rowMapper
+                              )
+                          ).filter(isNotNull)
                       )
                     : null;
             const coords = backupRow || cleanRows;
