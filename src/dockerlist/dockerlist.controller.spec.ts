@@ -21,6 +21,7 @@ describe("DockerList Controller", () => {
 
         controller = module.get<DockerlistController>(DockerlistController);
 
+        mockGetDockerList.mockReset();
         mockGetDockerList.mockResolvedValue({
             status: "received",
             containers: [],
@@ -48,6 +49,16 @@ describe("DockerList Controller", () => {
             expect(result).toEqual({
                 status: "received",
                 containers: [],
+            });
+        });
+
+        it("returns an error if the library fails", async () => {
+            mockGetDockerList.mockRejectedValue(new Error("some error"));
+            const result = await controller.getDockerList();
+            expect(mockGetDockerList).toBeCalledWith();
+            expect(mockGetDockerList).toBeCalledTimes(1);
+            expect(result).toEqual({
+                status: "error",
             });
         });
     });

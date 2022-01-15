@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  # USAGE: copy docker-compose.mac.yml and Dockerfile.mac to parent of homeremote-server and run docker-compose -f docker-compose.mac.yml up --build
+  # cp docker-compose.mac.yml ../ && cp Dockerfile.mac ../ && cd .. && docker-compose -f docker-compose.mac.yml up --build
+  nodejs-server:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.mac
+    ports:
+      - "3001:3001"
+      - "3000:3000"
+    # container_name: homeremote-wrapper
+    volumes:
+       - ./homeremote-server:/usr/src/app/server
+       - /usr/src/app/server/node_modules
+       - ./homeremote:/usr/src/app/client
+       - /usr/src/app/client/node_modules
