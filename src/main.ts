@@ -17,7 +17,18 @@ async function bootstrap() {
     app.useWebSocketAdapter(new WsAdapter(app));
     app.use(cookieParser());
     if (process.env.NODE_ENV === "DEVELOPMENT") {
-        app.enableCors();
+        app.enableCors({
+            // Access-Control-Allow-Headers
+            allowedHeaders:
+                "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
+            // Access-Control-Allow-Credentials
+            credentials: true,
+            // Access-Control-Allow-Origin
+            origin: "http://localhost:3000",
+            // Access-Control-Allow-Methods
+            methods: "GET,OPTIONS,PATCH,DELETE,POST,PUT",
+            optionsSuccessStatus: 204,
+        });
         await app.listen(DEV_PORT);
     } else {
         await app.listen(PROD_PORT);

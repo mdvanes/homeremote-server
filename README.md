@@ -19,9 +19,19 @@ To fix auto import, I have added this setting in VS Code
 
 ## Development flow
 
-* start nginx proxy: `yarn start:dev-nginx` (see NGINX chapter), this will run on port 3002
-* in same terminal, start dev API server: `yarn start:dev`, this will run on port 3001 (prod on port 3200)
+## Without nginx proxy (requires development mode CORS settings on client and server)
+
+* in same terminal, start dev API server: `yarn start:dev-temp`, this will run on port 3001 (prod on port 3200)
 * in the UI project start the dev webpack server with `yarn start:dev`, this will run on port 3000
+* Open browser on http://localhost:3000
+
+## With nginx proxy
+
+* on client, use .env.development.local with REACT_APP_BASE_URL=http://localhost:3002
+* start nginx proxy: `yarn start:dev-nginx` (see NGINX chapter), this will run on port 3002
+* in same terminal, start dev API server: `yarn start:dev-temp`, this will run on port 3001 (prod on port 3200)
+* in the UI project start the dev webpack server with `yarn start:dev`, this will run on port 3000
+* Open browser on http://localhost:3002
 * generate a new route (i.e. controller), e.g. /api/switches with `nest g co switches`
 * add prefix `api/` manually in /switches/switches.controller.ts
 
