@@ -1,4 +1,11 @@
-import { Controller, Get, Logger, Query } from "@nestjs/common";
+import {
+    Controller,
+    Get,
+    HttpException,
+    HttpStatus,
+    Logger,
+    Query,
+} from "@nestjs/common";
 import bcrypt from "bcrypt";
 
 const saltRounds = 10;
@@ -20,11 +27,20 @@ export class PwToHashController {
     // - http://localhost:3001/api/pw-to-hash/?password=test
     @Get()
     async getHash(@Query() query: { password: string }): Promise<string> {
-        try {
-            return generateHash(query.password);
-        } catch (err) {
-            this.logger.error(`Can't hash password ${err}`);
-            return "";
+        if (process.env.NODE_ENV === "DEVELOPMENT") {
+            try {
+                return generateHash(query.password);
+            } catch (err) {
+                this.logger.error(`Can't hash password ${err}`);
+                throw new HttpException(
+                    "failed to receive downstream data",
+                    HttpStatus.BAD_REQUEST
+                );
+            }
+        } else {
+            this.logger.error("Only allow this endpoint in development mode");
+            // Throw 418, because "Some websites use this response for requests they do not wish to handle, such as automated queries" source: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/418
+            throw new HttpException("Refused", HttpStatus.I_AM_A_TEAPOT);
         }
     }
 }
