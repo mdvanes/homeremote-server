@@ -29,11 +29,15 @@ export class PwToHashController {
     async getHash(@Query() query: { password: string }): Promise<string> {
         if (process.env.NODE_ENV === "DEVELOPMENT") {
             try {
-                return generateHash(query.password);
+                if (query.password && query.password.length > 0) {
+                    return generateHash(query.password);
+                } else {
+                    throw Error("Invalid params");
+                }
             } catch (err) {
                 this.logger.error(`Can't hash password ${err}`);
                 throw new HttpException(
-                    "failed to receive downstream data",
+                    "Invalid params",
                     HttpStatus.BAD_REQUEST
                 );
             }
