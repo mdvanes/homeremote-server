@@ -38,8 +38,8 @@ To fix auto import, I have added this setting in VS Code
 ## Adding a user
 
 * enable getHash in profile.controllers.ts
-* start dev server: `yarn start:dev`
-* for password "test", call (e.g. in browser) `http://localhost:3000/api/profile/gethash?password=test`
+* start dev server: `yarn start:dev-temp`
+* for password "test", call (e.g. in browser) `http://localhost:3001/api/pw-to-hash/?password=test`
 * store the hash with the username in auth.json
 * disable getHash in profile.controllers.ts
 
