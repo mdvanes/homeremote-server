@@ -21,9 +21,10 @@ To fix auto import, I have added this setting in VS Code
 
 ## Without nginx proxy (requires development mode CORS settings on client and server)
 
-* in same terminal, start dev API server: `yarn start:dev-temp`, this will run on port 3001 (prod on port 3200)
-* in the UI project start the dev webpack server with `yarn start:dev`, this will run on port 3000
+* Start dev API server: `yarn start:dev-temp`, this will run on port 3001 (prod on port 3200)
+* In the UI project start the dev webpack server with `yarn start:dev`, this will run on port 3000
 * Open browser on http://localhost:3000
+* Dockerlist and nowplaying do not yet send the `credentials: include` flag, so they give unauthorized errors
 
 ## With nginx proxy
 
